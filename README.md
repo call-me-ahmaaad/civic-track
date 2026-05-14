@@ -1,4 +1,4 @@
-<img width="1584" height="396" alt="Abstract Technology Profile LinkedIn Banner" src="https://github.com/user-attachments/assets/cbd88e31-cdc0-4a77-96f2-d27e19189904">
+<img width="1584" height="396" alt="Abstract Technology Profile LinkedIn Banner" src="https://github.com/user-attachments/assets/c7ff107e-7ae4-43df-b5a9-5f3d626db790">
 
 ---
 A straightforward resident data management system built for village-level administration.
