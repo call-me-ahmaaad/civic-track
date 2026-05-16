@@ -103,7 +103,7 @@ class ResidentController
         $id = $_GET['id'];
 
         try {
-            $family = $this->residentRepository->findById($id);
+            $resident = $this->residentRepository->findById($id);
 
             require 'views/residents/edit.php';
         } catch (NotFoundException $error) {

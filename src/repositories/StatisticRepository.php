@@ -127,4 +127,21 @@ class StatisticRepository
             throw new DatabaseException('Failed to get total of each education level from database');
         }
     }
+
+    public function getBirthdate()
+    {
+        try {
+            $stmt = $this->pdo->prepare(
+                "SELECT birthdate FROM residents"
+            );
+
+            $stmt->execute();
+
+            $result = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+            return $result ?: [];
+        } catch (PDOException $error) {
+            throw new DatabaseException('Failed to get birthdate from database');
+        }
+    }
 }
