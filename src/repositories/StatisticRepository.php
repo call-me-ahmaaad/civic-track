@@ -22,7 +22,7 @@ class StatisticRepository
 
             $stmt->execute();
 
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $result = $stmt->fetchColumn();
 
             return $result ?: [];
         } catch (PDOException $error) {
@@ -37,7 +37,7 @@ class StatisticRepository
 
             $stmt->execute();
 
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $result = $stmt->fetchColumn();
 
             return $result ?: [];
         } catch (PDOException $error) {

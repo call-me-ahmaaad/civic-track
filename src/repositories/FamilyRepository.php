@@ -2,8 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Exceptions\DatabaseException;
-use App\Exceptions\NotFoundException;
+use App\Exceptions\{DatabaseException, NotFoundException};
 use PDO;
 use PDOException;
 

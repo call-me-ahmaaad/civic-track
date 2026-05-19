@@ -2,23 +2,23 @@
 
 namespace App\Controllers;
 
-use App\Exceptions\NotFoundException;
+use App\Exceptions\{NotFoundException, DatabaseException, ValidationException};
 use App\Repositories\FamilyRepository;
-use App\Exceptions\DatabaseException;
+use App\Services\Validators\FamilyValidator;
 
 class FamilyController
 {
     private FamilyRepository $familyRepository;
+    private FamilyValidator $familyValidator;
 
-    public function __construct(FamilyRepository $familyRepository)
+    public function __construct(FamilyRepository $familyRepository, FamilyValidator $familyValidator)
     {
         $this->familyRepository = $familyRepository;
+        $this->familyValidator = $familyValidator;
     }
 
     public function index()
     {
-        session_start();
-
         if (!isset($_SESSION['user'])) {
             header('Location: /login');
             exit();
@@ -38,8 +38,6 @@ class FamilyController
 
     public function create()
     {
-        session_start();
-
         if (!isset($_SESSION['user'])) {
             header('Location: /login');
             exit();
@@ -50,7 +48,10 @@ class FamilyController
 
     public function store()
     {
-        session_start();
+        if (!isset($_SESSION['user'])) {
+            header('Location: /login');
+            exit();
+        }
 
         $familyId = $_POST['family-id'];
         $address = $_POST['address'];
@@ -58,6 +59,8 @@ class FamilyController
         $communityUnit = $_POST['community-unit'];
 
         try {
+            $this->familyValidator->validation($familyId, $address, $neighborhoodUnit, $communityUnit);
+
             $this->familyRepository->save($familyId, $address, $neighborhoodUnit, $communityUnit);
 
             $_SESSION['success'] = "Successfully inserted a new family. Family: {$familyId}";
@@ -69,13 +72,16 @@ class FamilyController
 
             header('Location: /databaseError');
             exit();
+        } catch (ValidationException $error) {
+            $_SESSION['error'] = $error->getMessage();
+
+            header('Location: /families/create');
+            exit();
         }
     }
 
     public function edit()
     {
-        session_start();
-
         if (!isset($_SESSION['user'])) {
             header('Location: /login');
             exit();
@@ -102,15 +108,20 @@ class FamilyController
 
     public function update()
     {
-        session_start();
+        if (!isset($_SESSION['user'])) {
+            header('Location: /login');
+            exit();
+        }
 
-        $id = $_POST['id'];
+        $id = (int) $_POST['id'];
         $familyId = $_POST['family-id'];
         $address = $_POST['address'];
         $neighborhoodUnit = $_POST['neighborhood-unit'];
         $communityUnit = $_POST['community-unit'];
 
         try {
+            $this->familyValidator->validation($familyId, $address, $neighborhoodUnit, $communityUnit);
+
             $this->familyRepository->update($id, $familyId, $address, $neighborhoodUnit, $communityUnit);
 
             $_SESSION['success'] = "Successfully updated a family data. Family: {$familyId}";
@@ -122,13 +133,16 @@ class FamilyController
 
             header('Location: /databaseError');
             exit();
+        } catch (ValidationException $error) {
+            $_SESSION['error'] = $error->getMessage();
+
+            header('Location: /families/edit');
+            exit();
         }
     }
 
     public function delete()
     {
-        session_start();
-
         if (!isset($_SESSION['user'])) {
             header('Location: /login');
             exit();
@@ -155,14 +169,12 @@ class FamilyController
 
     public function destroy()
     {
-        session_start();
-
         if (!isset($_SESSION['user'])) {
             header('Location: /login');
             exit();
         }
 
-        $id = $_POST['id'];
+        $id = (int) $_POST['id'];
 
         try {
             $this->familyRepository->delete($id);

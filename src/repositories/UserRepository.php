@@ -2,8 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Exceptions\DatabaseException;
-use App\Exceptions\NotFoundException;
+use App\Exceptions\{DatabaseException, NotFoundException};
 use PDO;
 use PDOException;
 
@@ -27,7 +26,7 @@ class UserRepository
 
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if(!$result){
+            if (!$result) {
                 throw new NotFoundException("Username $username isn't registered as admin");
             }
 

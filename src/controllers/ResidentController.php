@@ -2,23 +2,23 @@
 
 namespace App\Controllers;
 
-use App\Exceptions\NotFoundException;
-use App\Exceptions\DatabaseException;
+use App\Exceptions\{NotFoundException, DatabaseException, ValidationException};
 use App\Repositories\ResidentRepository;
+use App\Services\Validators\ResidentValidator;
 
 class ResidentController
 {
     private ResidentRepository $residentRepository;
+    private ResidentValidator $residentValidator;
 
-    public function __construct(ResidentRepository $residentRepository)
+    public function __construct(ResidentRepository $residentRepository, ResidentValidator $residentValidator)
     {
         $this->residentRepository = $residentRepository;
+        $this->residentValidator = $residentValidator;
     }
 
     public function index()
     {
-        session_start();
-
         if (!isset($_SESSION['user'])) {
             header('Location: /login');
             exit();
@@ -38,8 +38,6 @@ class ResidentController
 
     public function create()
     {
-        session_start();
-
         if (!isset($_SESSION['user'])) {
             header('Location: /login');
             exit();
@@ -50,21 +48,38 @@ class ResidentController
 
     public function store()
     {
-        session_start();
+        if (!isset($_SESSION['user'])) {
+            header('Location: /login');
+            exit();
+        }
 
         $identityNumber = $_POST['identity-number'];
         $fullname = $_POST['fullname'];
         $gender = $_POST['gender'];
-        $birthplaceId = $_POST['birthplace'];
+        $birthplaceId = (int) $_POST['birthplace'];
         $birthdate = $_POST['birthdate'];
-        $religionId = $_POST['religion'];
-        $educationLevelId = $_POST['education-level'];
-        $occupationId = $_POST['occupation'];
-        $familyRoleId = $_POST['family-role'];
+        $religionId = (int) $_POST['religion'];
+        $educationLevelId = (int) $_POST['education-level'];
+        $occupationId = (int) $_POST['occupation'];
+        $familyRoleId = (int) $_POST['family-role'];
         $maritalStatus = $_POST['marital-status'];
         $familyId = $_POST['family-id'];
 
         try {
+            $this->residentValidator->validation(
+                $identityNumber,
+                $fullname,
+                $gender,
+                $birthplaceId,
+                $birthdate,
+                $religionId,
+                $educationLevelId,
+                $occupationId,
+                $familyRoleId,
+                $maritalStatus,
+                $familyId
+            );
+
             $this->residentRepository->save(
                 $identityNumber,
                 $fullname,
@@ -88,13 +103,16 @@ class ResidentController
 
             header('Location: /databaseError');
             exit();
+        } catch (ValidationException $error) {
+            $_SESSION['error'] = $error->getMessage();
+
+            header('Location: /residents/create');
+            exit();
         }
     }
 
     public function edit()
     {
-        session_start();
-
         if (!isset($_SESSION['user'])) {
             header('Location: /login');
             exit();
@@ -121,22 +139,39 @@ class ResidentController
 
     public function update()
     {
-        session_start();
+        if (!isset($_SESSION['user'])) {
+            header('Location: /login');
+            exit();
+        }
 
-        $id = $_POST['id'];
+        $id = (int) $_POST['id'];
         $identityNumber = $_POST['identity-number'];
         $fullname = $_POST['fullname'];
         $gender = $_POST['gender'];
-        $birthplaceId = $_POST['birthplace'];
+        $birthplaceId = (int) $_POST['birthplace'];
         $birthdate = $_POST['birthdate'];
-        $religionId = $_POST['religion'];
-        $educationLevelId = $_POST['education-level'];
-        $occupationId = $_POST['occupation'];
-        $familyRoleId = $_POST['family-role'];
+        $religionId = (int) $_POST['religion'];
+        $educationLevelId = (int) $_POST['education-level'];
+        $occupationId = (int) $_POST['occupation'];
+        $familyRoleId = (int) $_POST['family-role'];
         $maritalStatus = $_POST['marital-status'];
         $familyId = $_POST['family-id'];
 
         try {
+            $this->residentValidator->validation(
+                $identityNumber,
+                $fullname,
+                $gender,
+                $birthplaceId,
+                $birthdate,
+                $religionId,
+                $educationLevelId,
+                $occupationId,
+                $familyRoleId,
+                $maritalStatus,
+                $familyId
+            );
+
             $this->residentRepository->update(
                 $id,
                 $identityNumber,
@@ -161,13 +196,16 @@ class ResidentController
 
             header('Location: /databaseError');
             exit();
+        } catch (ValidationException $error) {
+            $_SESSION['error'] = $error->getMessage();
+
+            header('Location: /residents/edit');
+            exit();
         }
     }
 
     public function delete()
     {
-        session_start();
-
         if (!isset($_SESSION['user'])) {
             header('Location: /login');
             exit();
@@ -176,7 +214,7 @@ class ResidentController
         $id = $_GET['id'];
 
         try {
-            $family = $this->residentRepository->findById($id);
+            $resident = $this->residentRepository->findById($id);
 
             require 'views/residents/delete.php';
         } catch (NotFoundException $error) {
@@ -194,14 +232,12 @@ class ResidentController
 
     public function destroy()
     {
-        session_start();
-
         if (!isset($_SESSION['user'])) {
             header('Location: /login');
             exit();
         }
 
-        $id = $_POST['id'];
+        $id = (int) $_POST['id'];
 
         try {
             $this->residentRepository->delete($id);

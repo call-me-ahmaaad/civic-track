@@ -2,8 +2,7 @@
 
 namespace App\Controllers;
 
-use App\Exceptions\DatabaseException;
-use App\Exceptions\NotFoundException;
+use App\Exceptions\{DatabaseException, AuthException};
 use App\Repositories\UserRepository;
 
 class AuthController
@@ -25,8 +24,6 @@ class AuthController
         $username = $_POST['username'];
         $password = $_POST['password'];
 
-        session_start();
-
         try {
             $user = $this->userRepository->findByUsername($username);
 
@@ -35,12 +32,12 @@ class AuthController
             if ($status) {
                 $_SESSION['user'] = $user['username'];
 
-                header('Location: /dashboard');
+                header('Location: /');
                 exit();
             } else {
-                throw new NotFoundException("Invalid username or password");
+                throw new AuthException("Invalid username or password");
             }
-        } catch (NotFoundException $error) {
+        } catch (AuthException $error) {
             $_SESSION['error'] = $error->getMessage();
 
             header('Location: /login');
@@ -55,8 +52,6 @@ class AuthController
 
     public function logout()
     {
-        session_start();
-
         unset($_SESSION['user']);
 
         session_destroy();
