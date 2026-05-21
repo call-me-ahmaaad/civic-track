@@ -35,7 +35,7 @@ class DashboardController
             $birthdates = $this->statisticRepository->getBirthdate();
             $totalEachAge = $this->ageService->getTotalEachAge($birthdates);
 
-            require 'views/dashboard/index.php';
+            require __DIR__ . '/../../views/dashboard/index.php';
         } catch (DatabaseException $error) {
             $_SESSION['error'] = $error->getMessage();
 

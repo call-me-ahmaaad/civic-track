@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use App\Exceptions\{DatabaseException, AuthException};
+use App\Exceptions\{DatabaseException, AuthException, NotFoundException};
 use App\Repositories\UserRepository;
 
 class AuthController
@@ -16,7 +16,7 @@ class AuthController
 
     public function index()
     {
-        require 'views/auth/login.php';
+        require __DIR__ . '/../../views/auth/login.php';
     }
 
     public function login()
@@ -32,12 +32,14 @@ class AuthController
             if ($status) {
                 $_SESSION['user'] = $user['username'];
 
+                $_SESSION['success'] = "Successfully login to the system. Welcome, officer!";
+
                 header('Location: /');
                 exit();
             } else {
                 throw new AuthException("Invalid username or password");
             }
-        } catch (AuthException $error) {
+        } catch (AuthException | NotFoundException $error) {
             $_SESSION['error'] = $error->getMessage();
 
             header('Location: /login');

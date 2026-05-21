@@ -27,7 +27,7 @@ class FamilyController
         try {
             $families = $this->familyRepository->findAll();
 
-            require 'views/families/index.php';
+            require __DIR__ . '/../../views/families/index.php';
         } catch (DatabaseException $error) {
             $_SESSION['error'] = $error->getMessage();
 
@@ -43,7 +43,7 @@ class FamilyController
             exit();
         }
 
-        require 'views/families/create.php';
+        require __DIR__ . '/../../views/families/create.php';
     }
 
     public function store()
@@ -92,7 +92,7 @@ class FamilyController
         try {
             $family = $this->familyRepository->findById($id);
 
-            require 'views/families/edit.php';
+            require __DIR__ . '/../../views/families/edit.php';
         } catch (NotFoundException $error) {
             $_SESSION['error'] = $error->getMessage();
 
@@ -136,7 +136,7 @@ class FamilyController
         } catch (ValidationException $error) {
             $_SESSION['error'] = $error->getMessage();
 
-            header('Location: /families/edit');
+            header('Location: /families/edit?id=' . $id);
             exit();
         }
     }
@@ -153,7 +153,7 @@ class FamilyController
         try {
             $family = $this->familyRepository->findById($id);
 
-            require 'views/families/delete.php';
+            require __DIR__ . '/../../views/families/delete.php';
         } catch (NotFoundException $error) {
             $_SESSION['error'] = $error->getMessage();
 
@@ -182,6 +182,7 @@ class FamilyController
             $_SESSION['success'] = "Successfully deleted a family data";
 
             header('Location: /families');
+            exit();
         } catch (DatabaseException $error) {
             $_SESSION['error'] = $error->getMessage();
 

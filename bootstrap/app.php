@@ -6,7 +6,7 @@ use App\Repositories\{UserRepository, FamilyRepository, ResidentRepository, Stat
 use App\Services\AgeService;
 use App\Services\Validators\{FamilyValidator, ResidentValidator};
 
-$config = require __DIR__ . '/config/database.php';
+$config = require __DIR__ . '/../config/database.php';
 $db = new Database($config);
 $pdo = $db->connect();
 

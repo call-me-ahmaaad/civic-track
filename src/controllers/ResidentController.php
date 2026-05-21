@@ -27,7 +27,7 @@ class ResidentController
         try {
             $residents = $this->residentRepository->findAll();
 
-            require 'views/residents/index.php';
+            require __DIR__ . '/../../views/residents/index.php';
         } catch (DatabaseException $error) {
             $_SESSION['error'] = $error->getMessage();
 
@@ -43,7 +43,7 @@ class ResidentController
             exit();
         }
 
-        require 'views/residents/create.php';
+        require __DIR__ . '/../../views/residents/create.php';
     }
 
     public function store()
@@ -123,7 +123,7 @@ class ResidentController
         try {
             $resident = $this->residentRepository->findById($id);
 
-            require 'views/residents/edit.php';
+            require __DIR__ . '/../../views/residents/edit.php';
         } catch (NotFoundException $error) {
             $_SESSION['error'] = $error->getMessage();
 
@@ -199,7 +199,7 @@ class ResidentController
         } catch (ValidationException $error) {
             $_SESSION['error'] = $error->getMessage();
 
-            header('Location: /residents/edit');
+            header('Location: /residents/edit?id=' . $id);
             exit();
         }
     }
@@ -216,7 +216,7 @@ class ResidentController
         try {
             $resident = $this->residentRepository->findById($id);
 
-            require 'views/residents/delete.php';
+            require __DIR__ . '/../../views/residents/delete.php';
         } catch (NotFoundException $error) {
             $_SESSION['error'] = $error->getMessage();
 
@@ -245,6 +245,7 @@ class ResidentController
             $_SESSION['success'] = "Successfully deleted a resident data";
 
             header('Location: /residents');
+            exit();
         } catch (DatabaseException $error) {
             $_SESSION['error'] = $error->getMessage();
 

@@ -24,7 +24,7 @@ class StatisticRepository
 
             $result = $stmt->fetchColumn();
 
-            return $result ?: [];
+            return $result;
         } catch (PDOException $error) {
             throw new DatabaseException('Failed to get total of family from database');
         }
@@ -39,7 +39,7 @@ class StatisticRepository
 
             $result = $stmt->fetchColumn();
 
-            return $result ?: [];
+            return $result;
         } catch (PDOException $error) {
             throw new DatabaseException('Failed to get total of resident from database');
         }
@@ -49,8 +49,8 @@ class StatisticRepository
     {
         try {
             $stmt = $this->pdo->prepare(
-                "SELECT SUM(CASE WHEN gender = 'Male' THEN 1 ELSE 0 END) AS count_male,
-                        SUM(CASE WHEN gender = 'Female' THEN 1 ELSE 0 END) AS count_female
+                "SELECT SUM(CASE WHEN gender = 'Male' THEN 1 ELSE 0 END) AS Male,
+                        SUM(CASE WHEN gender = 'Female' THEN 1 ELSE 0 END) AS Female
                 FROM residents"
             );
 
@@ -94,7 +94,8 @@ class StatisticRepository
                 FROM residents
                 INNER JOIN occupations ON occupations.id = residents.occupation_id
                 GROUP BY occupations.occupation
-                ORDER BY total DESC"
+                ORDER BY total DESC
+                LIMIT 5"
             );
 
             $stmt->execute();
