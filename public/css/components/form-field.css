@@ -1,0 +1,62 @@
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.form-field__value {
+    padding: 0 10px;
+    height: 35px;
+    border-radius: 5px;
+    border: 1px solid var(--input-border);
+    transition: all 0.2s ease;
+}
+
+.form-field__value:focus {
+    border-color: var(--input-border-focus);
+}
+
+.form-field__value::placeholder {
+    color: var(--placeholder-text);
+}
+
+.form__buttons {
+    margin-top: 20px;
+    display: flex;
+    width: 100%;
+    justify-content: end;
+    gap: 10px;
+}
+
+.form__button {
+    padding: 7px 40px;
+    transition: all 0.2s ease;
+}
+
+.form__button--submit,
+.form__button--edit {
+    background-color: var(--color-btn-default);
+    color: var(--text-in-dark);
+    border-radius: 5px;
+    border: 1px solid var(--color-btn-default);
+}
+
+.form__button--submit:hover,
+.form__button--edit:hover {
+    background-color: var(--color-btn-default-hover);
+    border-color: var(--color-btn-default-hover);
+}
+
+.form__button--cancel,
+.form__button--delete {
+    background-color: var(--color-btn-danger);
+    color: var(--text-in-dark);
+    border-radius: 5px;
+    border: 1px solid var(--color-btn-danger);
+}
+
+.form__button--cancel:hover,
+.form__button--delete:hover {
+    background-color: var(--color-btn-danger-hover);
+    border-color: var(--color-btn-danger-hover);
+}

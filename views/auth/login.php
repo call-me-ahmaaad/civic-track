@@ -7,34 +7,45 @@
 
     <title>Login</title>
 
+    <link rel="stylesheet" href="/css/reset.css">
     <link rel="stylesheet" href="/css/base.css">
-    <link rel="stylesheet" href="/css/login.css">
+    <link rel="stylesheet" href="/css/pages/auth/login.css">
 
     <link rel="shortcut icon" href="/img/civictrack_icon.svg" type="image/x-icon">
 </head>
 
 <body>
     <div class="login">
-        <img class="login__logo" src="/img/civictrack_logo.svg" alt="CivicTrack">
-
-        <form class="login__form" action="/login" method="post" novalidate autocomplete="off">
-            <div class="form-input form-input--username">
-                <label class="form-input__label" for="username">Username</label>
-                <input class="form-input__input" type="text" name="username" id="username" required>
+        <div class="login__banner">
+            <img src="/img/civictrack_login-banner.webp" alt="CivicTrack Login Banner">
+        </div>
+        <div class="login__form">
+            <div class="login__header">
+                <img class="login__logo" src="/img/civictrack_logo.svg" alt="CivicTrack Logo">
+                <p class="login__tagline">Smart Administration for Better Communities</p>
             </div>
 
-            <div class="form-input form-input--password">
-                <label class="form-input__label" for="password">Password</label>
-                <input class="form-input__input" type="password" name="password" id="password" required>
-            </div>
+            <form class="login__inputs" action="/login" method="post" novalidate autocomplete="off">
+                <div class="form-field form-field--username">
+                    <label class="form-field__label" for="username">Username</label>
+                    <input class="form-field__value" type="text" name="username" id="username" required
+                        placeholder="Input your username">
+                </div>
 
-            <button class="form-button form-button--submit" type="submit">Login</button>
-        </form>
+                <div class="form-field form-field--password">
+                    <label class="form-field__label" for="password">Password</label>
+                    <input class="form-field__value" type="password" name="password" id="password" required
+                        placeholder="Input your password">
+                </div>
+
+                <button class="form__button form__button--submit" type="submit">Login</button>
+            </form>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <?php require __DIR__ . '/../../views/alerts/login.php'; ?>
+    <?php require __DIR__ . '/../components/alerts/info.php' ?>
 </body>
 
 </html>

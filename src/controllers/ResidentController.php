@@ -3,18 +3,20 @@
 namespace App\Controllers;
 
 use App\Exceptions\{NotFoundException, DatabaseException, ValidationException};
-use App\Repositories\ResidentRepository;
+use App\Repositories\{ResidentRepository, ReferenceRepository};
 use App\Services\Validators\ResidentValidator;
 
 class ResidentController
 {
     private ResidentRepository $residentRepository;
     private ResidentValidator $residentValidator;
+    private ReferenceRepository $referenceRepository;
 
-    public function __construct(ResidentRepository $residentRepository, ResidentValidator $residentValidator)
+    public function __construct(ResidentRepository $residentRepository, ResidentValidator $residentValidator, ReferenceRepository $referenceRepository)
     {
         $this->residentRepository = $residentRepository;
         $this->residentValidator = $residentValidator;
+        $this->referenceRepository = $referenceRepository;
     }
 
     public function index()
@@ -43,6 +45,12 @@ class ResidentController
             exit();
         }
 
+        $cities = $this->referenceRepository->getCities();
+        $religions = $this->referenceRepository->getReligions();
+        $educations = $this->referenceRepository->getEducations();
+        $occupations = $this->referenceRepository->getOccupations();
+        $familyRoles = $this->referenceRepository->getFamilyRoles();
+
         require __DIR__ . '/../../views/residents/create.php';
     }
 
@@ -53,17 +61,17 @@ class ResidentController
             exit();
         }
 
-        $identityNumber = $_POST['identity-number'];
+        $identityNumber = $_POST['identityNumber'];
         $fullname = $_POST['fullname'];
         $gender = $_POST['gender'];
         $birthplaceId = (int) $_POST['birthplace'];
         $birthdate = $_POST['birthdate'];
         $religionId = (int) $_POST['religion'];
-        $educationLevelId = (int) $_POST['education-level'];
+        $educationId = (int) $_POST['education'];
         $occupationId = (int) $_POST['occupation'];
-        $familyRoleId = (int) $_POST['family-role'];
-        $maritalStatus = $_POST['marital-status'];
-        $familyId = $_POST['family-id'];
+        $familyRoleId = (int) $_POST['familyRole'];
+        $maritalStatus = $_POST['maritalStatus'];
+        $familyCardNumber = $_POST['familyCardNumber'];
 
         try {
             $this->residentValidator->validation(
@@ -73,11 +81,11 @@ class ResidentController
                 $birthplaceId,
                 $birthdate,
                 $religionId,
-                $educationLevelId,
+                $educationId,
                 $occupationId,
                 $familyRoleId,
                 $maritalStatus,
-                $familyId
+                $familyCardNumber
             );
 
             $this->residentRepository->save(
@@ -87,26 +95,52 @@ class ResidentController
                 $birthplaceId,
                 $birthdate,
                 $religionId,
-                $educationLevelId,
+                $educationId,
                 $occupationId,
                 $familyRoleId,
                 $maritalStatus,
-                $familyId
+                $familyCardNumber
             );
 
-            $_SESSION['success'] = "Successfully inserted a new resident. Resident: {$identityNumber}";
+            $_SESSION['success'] = "Successfully inserted a new resident.";
 
             header('Location: /residents');
             exit();
         } catch (DatabaseException $error) {
             $_SESSION['error'] = $error->getMessage();
 
-            header('Location: /databaseError');
+            header('Location: /residents');
             exit();
         } catch (ValidationException $error) {
             $_SESSION['error'] = $error->getMessage();
 
             header('Location: /residents/create');
+            exit();
+        }
+    }
+
+    public function detail()
+    {
+        if (!isset($_SESSION['user'])) {
+            header('Location: /login');
+            exit();
+        }
+
+        $identityNumber = $_GET['identityNumber'];
+
+        try {
+            $resident = $this->residentRepository->findByIdentityNumber($identityNumber);
+
+            require __DIR__ . '/../../views/residents/detail.php';
+        } catch (NotFoundException $error) {
+            $_SESSION['error'] = $error->getMessage();
+
+            header('Location: /residents');
+            exit();
+        } catch (DatabaseException $error) {
+            $_SESSION['error'] = $error->getMessage();
+
+            header('Location: /residents');
             exit();
         }
     }
@@ -118,10 +152,16 @@ class ResidentController
             exit();
         }
 
-        $id = $_GET['id'];
+        $identityNumber = $_GET['identityNumber'];
+
+        $cities = $this->referenceRepository->getCities();
+        $religions = $this->referenceRepository->getReligions();
+        $educations = $this->referenceRepository->getEducations();
+        $occupations = $this->referenceRepository->getOccupations();
+        $familyRoles = $this->referenceRepository->getFamilyRoles();
 
         try {
-            $resident = $this->residentRepository->findById($id);
+            $resident = $this->residentRepository->findByIdentityNumber($identityNumber);
 
             require __DIR__ . '/../../views/residents/edit.php';
         } catch (NotFoundException $error) {
@@ -132,7 +172,7 @@ class ResidentController
         } catch (DatabaseException $error) {
             $_SESSION['error'] = $error->getMessage();
 
-            header('Location: /databaseError');
+            header('Location: /residents');
             exit();
         }
     }
@@ -145,17 +185,17 @@ class ResidentController
         }
 
         $id = (int) $_POST['id'];
-        $identityNumber = $_POST['identity-number'];
+        $identityNumber = $_POST['identityNumber'];
         $fullname = $_POST['fullname'];
         $gender = $_POST['gender'];
         $birthplaceId = (int) $_POST['birthplace'];
         $birthdate = $_POST['birthdate'];
         $religionId = (int) $_POST['religion'];
-        $educationLevelId = (int) $_POST['education-level'];
+        $educationId = (int) $_POST['education'];
         $occupationId = (int) $_POST['occupation'];
-        $familyRoleId = (int) $_POST['family-role'];
-        $maritalStatus = $_POST['marital-status'];
-        $familyId = $_POST['family-id'];
+        $familyRoleId = (int) $_POST['familyRole'];
+        $maritalStatus = $_POST['maritalStatus'];
+        $familyCardNumber = $_POST['familyCardNumber'];
 
         try {
             $this->residentValidator->validation(
@@ -165,11 +205,11 @@ class ResidentController
                 $birthplaceId,
                 $birthdate,
                 $religionId,
-                $educationLevelId,
+                $educationId,
                 $occupationId,
                 $familyRoleId,
                 $maritalStatus,
-                $familyId
+                $familyCardNumber
             );
 
             $this->residentRepository->update(
@@ -180,52 +220,26 @@ class ResidentController
                 $birthplaceId,
                 $birthdate,
                 $religionId,
-                $educationLevelId,
+                $educationId,
                 $occupationId,
                 $familyRoleId,
                 $maritalStatus,
-                $familyId
+                $familyCardNumber
             );
 
-            $_SESSION['success'] = "Successfully updated a resident data. Resident: {$identityNumber}";
+            $_SESSION['success'] = "Successfully updated a resident data";
 
             header('Location: /residents');
             exit();
         } catch (DatabaseException $error) {
             $_SESSION['error'] = $error->getMessage();
 
-            header('Location: /databaseError');
+            header('Location: /residents');
             exit();
         } catch (ValidationException $error) {
             $_SESSION['error'] = $error->getMessage();
 
-            header('Location: /residents/edit?id=' . $id);
-            exit();
-        }
-    }
-
-    public function delete()
-    {
-        if (!isset($_SESSION['user'])) {
-            header('Location: /login');
-            exit();
-        }
-
-        $id = $_GET['id'];
-
-        try {
-            $resident = $this->residentRepository->findById($id);
-
-            require __DIR__ . '/../../views/residents/delete.php';
-        } catch (NotFoundException $error) {
-            $_SESSION['error'] = $error->getMessage();
-
-            header('Location: /residents');
-            exit();
-        } catch (DatabaseException $error) {
-            $_SESSION['error'] = $error->getMessage();
-
-            header('Location: /databaseError');
+            header('Location: /residents/edit?identityNumber=' . $identityNumber);
             exit();
         }
     }
@@ -238,6 +252,7 @@ class ResidentController
         }
 
         $id = (int) $_POST['id'];
+        $identityNumber = $_POST['identityNumber'];
 
         try {
             $this->residentRepository->delete($id);
@@ -249,7 +264,7 @@ class ResidentController
         } catch (DatabaseException $error) {
             $_SESSION['error'] = $error->getMessage();
 
-            header('Location: /databaseError');
+            header('Location: /residents');
             exit();
         }
     }

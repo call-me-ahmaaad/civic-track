@@ -1,0 +1,35 @@
+.create {
+    border: 2px solid var(--secondary-color);
+    border-radius: 7px;
+    padding: 20px;
+    margin-bottom: 15px;
+}
+
+.create__title {
+    margin-bottom: 20px;
+    font-size: var(--font-size-xl);
+}
+
+.create__data {
+    display: grid;
+    grid-template-areas:
+        "familyCardNumber neighborhoodUnit"
+        "address communityUnit";
+    gap: 25px;
+}
+
+.form-field--family-card-number {
+    grid-area: familyCardNumber;
+}
+
+.form-field--address {
+    grid-area: address;
+}
+
+.form-field--neighborhood-unit {
+    grid-area: neighborhoodUnit;
+}
+
+.form-field--community-unit {
+    grid-area: communityUnit;
+}

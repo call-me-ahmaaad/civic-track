@@ -1,0 +1,25 @@
+.content__table {
+    width: 100%;
+    border: 2px solid var(--secondary-color);
+    border-radius: 7px;
+    padding: 20px;
+}
+
+.content-table__title {
+    margin-bottom: 20px;
+    font-size: var(--font-size-xl);
+}
+
+.content-table__button {
+    padding: 3px 8px;
+    border-radius: 5px;
+    color: var(--text-in-dark);
+}
+
+.content-table__button--add {
+    background-color: var(--color-btn-default);
+}
+
+.content-table__button--add:hover {
+    background-color: var(--color-btn-default-hover);
+}

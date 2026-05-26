@@ -95,7 +95,7 @@ class StatisticRepository
                 INNER JOIN occupations ON occupations.id = residents.occupation_id
                 GROUP BY occupations.occupation
                 ORDER BY total DESC
-                LIMIT 5"
+                LIMIT 10"
             );
 
             $stmt->execute();
@@ -108,15 +108,15 @@ class StatisticRepository
         }
     }
 
-    public function getTotalEachEducationLevel()
+    public function getTotalEachEducation()
     {
         try {
             $stmt = $this->pdo->prepare(
-                "SELECT education_levels.education,
+                "SELECT educations.education,
                         COUNT(residents.id) AS total
                 FROM residents
-                INNER JOIN education_levels ON education_levels.id = residents.education_level_id
-                GROUP BY education_levels.education"
+                INNER JOIN educations ON educations.id = residents.education_id
+                GROUP BY educations.education"
             );
 
             $stmt->execute();
@@ -125,7 +125,7 @@ class StatisticRepository
 
             return $result ?: [];
         } catch (PDOException $error) {
-            throw new DatabaseException('Failed to get total of each education level from database');
+            throw new DatabaseException('Failed to get total of each education from database');
         }
     }
 

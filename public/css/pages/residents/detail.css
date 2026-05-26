@@ -1,0 +1,74 @@
+.detail {
+    border: 2px solid var(--secondary-color);
+    border-radius: 7px;
+    padding: 20px;
+    margin-bottom: 15px;
+}
+
+.detail__title {
+    margin-bottom: 20px;
+    font-size: var(--font-size-xl);
+}
+
+.detail__data {
+    display: grid;
+    grid-template-areas:
+        "identityNumber gender maritalStatus"
+        "familyCardNumber religion createdAt"
+        "fullname education updatedAt"
+        "birthplace occupation ."
+        "birthdate familyRole .";
+    gap: 25px;
+}
+
+.form-field--identity-number {
+    grid-area: identityNumber;
+}
+
+.form-field--family-card-number {
+    grid-area: familyCardNumber;
+}
+
+.form-field--fullname {
+    grid-area: fullname;
+}
+
+.form-field--gender {
+    grid-area: gender;
+}
+
+.form-field--birthplace {
+    grid-area: birthplace;
+}
+
+.form-field--birthdate {
+    grid-area: birthdate;
+}
+
+.form-field--religion {
+    grid-area: religion;
+}
+
+.form-field--education {
+    grid-area: education;
+}
+
+.form-field--occupation {
+    grid-area: occupation;
+}
+
+.form-field--family-role {
+    grid-area: familyRole;
+}
+
+.form-field--marital-status {
+    grid-area: maritalStatus;
+}
+
+.form-field--created-at {
+    grid-area: createdAt;
+}
+
+.form-field--updated-at {
+    grid-area: updatedAt;
+}

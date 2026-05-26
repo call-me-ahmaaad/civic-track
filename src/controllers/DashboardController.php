@@ -30,7 +30,7 @@ class DashboardController
             $totalEachGender = $this->statisticRepository->getTotalEachGender();
             $totalEachReligion = $this->statisticRepository->getTotalEachReligion();
             $totalEachOccupation = $this->statisticRepository->getTotalEachOccupation();
-            $totalEachEducationLevel = $this->statisticRepository->getTotalEachEducationLevel();
+            $totalEachEducationLevel = $this->statisticRepository->getTotalEachEducation();
 
             $birthdates = $this->statisticRepository->getBirthdate();
             $totalEachAge = $this->ageService->getTotalEachAge($birthdates);

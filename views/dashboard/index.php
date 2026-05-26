@@ -5,28 +5,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Document</title>
+    <title>Civil Statistic — CivicTrack</title>
+    <link rel="shortcut icon" href="/img/civictrack_icon.svg" type="image/x-icon">
 
+    <link rel="stylesheet" href="/css/reset.css">
     <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/layout.css">
-    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/pages/dashboard/dashboard.css">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 
 <body>
     <div class="layout">
-        <?php require __DIR__ . '/../../views/layouts/sidebar.php'; ?>
+        <?php require __DIR__ . '/../../views/components/sidebar.php'; ?>
 
         <main class="content">
-            <div class="content__header">
-                <button class="content__sidebar-button">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
-
-                <h1 class="content__title">Statistics</h1>
-            </div>
-
             <div class="content__statistics">
                 <div class="statistics-card statistics-card--summary">
                     <div class="summary-item">
@@ -66,7 +60,7 @@
                 </div>
 
                 <div class="statistics-card statistics-card--occupation">
-                    <h2 class="statistics-card__title">Occupation Statistics</h2>
+                    <h2 class="statistics-card__title">Top 10 Occupation Statistics</h2>
                     <div class="statistics-card__chart">
                         <canvas id="occupationChart"></canvas>
                     </div>
@@ -82,25 +76,10 @@
         </main>
     </div>
 
-    <?php require __DIR__ . '/../../views/alerts/login.php'; ?>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script>
-        const data = <?= json_encode([
-            'gender' => $totalEachGender,
-            'age' => $totalEachAge,
-            'religion' => $totalEachReligion,
-            'occupation' => $totalEachOccupation,
-            'education' => $totalEachEducationLevel
-        ]) ?>;
-
-        console.log(data);
-    </script>
-
-    <script src="/js/dashboard.js"></script>
-    <script src="/js/sidebar.js"></script>
+    <?php require __DIR__ . '/../components/chart.php' ?>
+    <?php require __DIR__ . '/../components/alerts/info.php' ?>
 </body>
 
 </html>

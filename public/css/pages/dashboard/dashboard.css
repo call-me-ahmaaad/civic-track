@@ -1,0 +1,85 @@
+.content__statistics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 400px 400px 400px;
+    grid-template-areas:
+        "summary gender"
+        "age religion"
+        "occupation education";
+    gap: 10px;
+}
+
+.statistics-card--summary {
+    grid-area: summary;
+}
+
+.statistics-card--gender {
+    grid-area: gender;
+}
+
+.statistics-card--age {
+    grid-area: age;
+}
+
+.statistics-card--religion {
+    grid-area: religion;
+}
+
+.statistics-card--occupation {
+    grid-area: occupation;
+}
+
+.statistics-card--education {
+    grid-area: education;
+}
+
+.statistics-card:not(.statistics-card--summary) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border: 1px solid var(--secondary-color);
+    border-radius: 7px;
+}
+
+.statistics-card__title {
+    position: absolute;
+    top: 10px;
+    left: 15px;
+    font-size: var(--font-size-lg);
+}
+
+.statistics-card__chart {
+    width: 90%;
+    height: 70%;
+}
+
+.statistics-card--summary {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.summary-item {
+    flex: 1;
+    position: relative;
+    border: 1px solid var(--secondary-color);
+    border-radius: 7px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.summary-item__title {
+    position: absolute;
+    top: 10px;
+    left: 15px;
+    font-size: var(--font-size-lg);
+}
+
+.summary-item__value {
+    font-size: var(--font-size-sl);
+    font-weight: 600;
+}

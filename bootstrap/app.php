@@ -11,6 +11,6 @@ $db = new Database($config);
 $pdo = $db->connect();
 
 $auth = new AuthController(new UserRepository($pdo));
-$family = new FamilyController(new FamilyRepository($pdo), new FamilyValidator());
-$resident = new ResidentController(new ResidentRepository($pdo), new ResidentValidator(new ReferenceRepository($pdo)));
+$family = new FamilyController(new FamilyRepository($pdo), new FamilyValidator(), new ResidentRepository($pdo));
+$resident = new ResidentController(new ResidentRepository($pdo), new ResidentValidator(new ReferenceRepository($pdo)), new ReferenceRepository($pdo));
 $dashboard = new DashboardController(new StatisticRepository($pdo), new AgeService());

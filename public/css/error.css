@@ -1,0 +1,19 @@
+.error {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.error__logo{
+    width: 100px;
+}
+
+.error__button{
+    margin-top: 10px;
+    padding: 10px 70px;
+    color: var(--text-in-dark);
+    background-color: var(--color-btn-danger);
+    border-radius: 5px;
+}

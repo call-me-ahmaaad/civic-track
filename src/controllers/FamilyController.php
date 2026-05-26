@@ -3,18 +3,20 @@
 namespace App\Controllers;
 
 use App\Exceptions\{NotFoundException, DatabaseException, ValidationException};
-use App\Repositories\FamilyRepository;
+use App\Repositories\{FamilyRepository, ResidentRepository};
 use App\Services\Validators\FamilyValidator;
 
 class FamilyController
 {
     private FamilyRepository $familyRepository;
     private FamilyValidator $familyValidator;
+    private ResidentRepository $residentRepository;
 
-    public function __construct(FamilyRepository $familyRepository, FamilyValidator $familyValidator)
+    public function __construct(FamilyRepository $familyRepository, FamilyValidator $familyValidator, ResidentRepository $residentRepository)
     {
         $this->familyRepository = $familyRepository;
         $this->familyValidator = $familyValidator;
+        $this->residentRepository = $residentRepository;
     }
 
     public function index()
@@ -53,29 +55,56 @@ class FamilyController
             exit();
         }
 
-        $familyId = $_POST['family-id'];
+        $familyCardNumber = $_POST['familyCardNumber'];
         $address = $_POST['address'];
-        $neighborhoodUnit = $_POST['neighborhood-unit'];
-        $communityUnit = $_POST['community-unit'];
+        $neighborhoodUnit = $_POST['neighborhoodUnit'];
+        $communityUnit = $_POST['communityUnit'];
 
         try {
-            $this->familyValidator->validation($familyId, $address, $neighborhoodUnit, $communityUnit);
+            $this->familyValidator->validation($familyCardNumber, $address, $neighborhoodUnit, $communityUnit);
 
-            $this->familyRepository->save($familyId, $address, $neighborhoodUnit, $communityUnit);
+            $this->familyRepository->save($familyCardNumber, $address, $neighborhoodUnit, $communityUnit);
 
-            $_SESSION['success'] = "Successfully inserted a new family. Family: {$familyId}";
+            $_SESSION['success'] = "Successfully inserted a new family. Family: {$familyCardNumber}";
 
             header('Location: /families');
             exit();
         } catch (DatabaseException $error) {
             $_SESSION['error'] = $error->getMessage();
 
-            header('Location: /databaseError');
+            header('Location: /families');
             exit();
         } catch (ValidationException $error) {
             $_SESSION['error'] = $error->getMessage();
 
             header('Location: /families/create');
+            exit();
+        }
+    }
+
+    public function detail()
+    {
+        if (!isset($_SESSION['user'])) {
+            header('Location: /login');
+            exit();
+        }
+
+        $familyCardNumber = $_GET['familyCardNumber'];
+
+        try {
+            $family = $this->familyRepository->findByFamilyCardNumber($familyCardNumber);
+            $residents = $this->residentRepository->findByFamilyCardNumber($familyCardNumber);
+
+            require __DIR__ . '/../../views/families/detail.php';
+        } catch (NotFoundException $error) {
+            $_SESSION['error'] = $error->getMessage();
+
+            header('Location: /families');
+            exit();
+        } catch (DatabaseException $error) {
+            $_SESSION['error'] = $error->getMessage();
+
+            header('Location: /families');
             exit();
         }
     }
@@ -87,21 +116,21 @@ class FamilyController
             exit();
         }
 
-        $id = $_GET['id'];
+        $familyCardNumber = $_GET['familyCardNumber'];
 
         try {
-            $family = $this->familyRepository->findById($id);
+            $family = $this->familyRepository->findByFamilyCardNumber($familyCardNumber);
 
             require __DIR__ . '/../../views/families/edit.php';
         } catch (NotFoundException $error) {
             $_SESSION['error'] = $error->getMessage();
 
-            header('Location: /families');
+            header('Location: /families/detail?familyCardNumber=' . $familyCardNumber);
             exit();
         } catch (DatabaseException $error) {
             $_SESSION['error'] = $error->getMessage();
 
-            header('Location: /databaseError');
+            header('Location: /families');
             exit();
         }
     }
@@ -113,56 +142,30 @@ class FamilyController
             exit();
         }
 
-        $id = (int) $_POST['id'];
-        $familyId = $_POST['family-id'];
+        $id = $_POST['id'];
+        $familyCardNumber = $_POST['familyCardNumber'];
         $address = $_POST['address'];
-        $neighborhoodUnit = $_POST['neighborhood-unit'];
-        $communityUnit = $_POST['community-unit'];
+        $neighborhoodUnit = $_POST['neighborhoodUnit'];
+        $communityUnit = $_POST['communityUnit'];
 
         try {
-            $this->familyValidator->validation($familyId, $address, $neighborhoodUnit, $communityUnit);
+            $this->familyValidator->validation($familyCardNumber, $address, $neighborhoodUnit, $communityUnit);
 
-            $this->familyRepository->update($id, $familyId, $address, $neighborhoodUnit, $communityUnit);
+            $this->familyRepository->update($id, $familyCardNumber, $address, $neighborhoodUnit, $communityUnit);
 
-            $_SESSION['success'] = "Successfully updated a family data. Family: {$familyId}";
+            $_SESSION['success'] = "Successfully updated a family data.";
 
             header('Location: /families');
             exit();
         } catch (DatabaseException $error) {
             $_SESSION['error'] = $error->getMessage();
 
-            header('Location: /databaseError');
+            header('Location: /families');
             exit();
         } catch (ValidationException $error) {
             $_SESSION['error'] = $error->getMessage();
 
-            header('Location: /families/edit?id=' . $id);
-            exit();
-        }
-    }
-
-    public function delete()
-    {
-        if (!isset($_SESSION['user'])) {
-            header('Location: /login');
-            exit();
-        }
-
-        $id = $_GET['id'];
-
-        try {
-            $family = $this->familyRepository->findById($id);
-
-            require __DIR__ . '/../../views/families/delete.php';
-        } catch (NotFoundException $error) {
-            $_SESSION['error'] = $error->getMessage();
-
-            header('Location: /families');
-            exit();
-        } catch (DatabaseException $error) {
-            $_SESSION['error'] = $error->getMessage();
-
-            header('Location: /databaseError');
+            header('Location: /families/edit?familyCardNumber=' . $familyCardNumber);
             exit();
         }
     }
@@ -174,7 +177,8 @@ class FamilyController
             exit();
         }
 
-        $id = (int) $_POST['id'];
+        $id = $_POST['id'];
+        $familyCardNumber = $_POST['familyCardNumber'];
 
         try {
             $this->familyRepository->delete($id);
@@ -186,7 +190,7 @@ class FamilyController
         } catch (DatabaseException $error) {
             $_SESSION['error'] = $error->getMessage();
 
-            header('Location: /databaseError');
+            header('Location: /families');
             exit();
         }
     }

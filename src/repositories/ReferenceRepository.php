@@ -9,7 +9,7 @@ use InvalidArgumentException;
 
 class ReferenceRepository
 {
-    private array $referenceTable = ['cities', 'religions', 'education_levels', 'occupations', 'family_roles'];
+    private array $referenceTable = ['cities', 'religions', 'educations', 'occupations', 'family_roles'];
     private PDO $pdo;
 
     public function __construct(PDO $pdo)
@@ -33,6 +33,71 @@ class ReferenceRepository
             return $stmt->fetchColumn() > 0;
         } catch (PDOException $error) {
             throw new DatabaseException("Failed to count row from {$table}");
+        }
+    }
+
+    public function getCities()
+    {
+        try {
+            $stmt = $this->pdo->prepare("SELECT id, city FROM cities");
+
+            $stmt->execute();
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $error) {
+            throw new DatabaseException('Failed to fetch cities data from database');
+        }
+    }
+
+    public function getReligions()
+    {
+        try {
+            $stmt = $this->pdo->prepare("SELECT id, religion FROM religions");
+
+            $stmt->execute();
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $error) {
+            throw new DatabaseException('Failed to fetch religions data from database');
+        }
+    }
+
+    public function getEducations()
+    {
+        try {
+            $stmt = $this->pdo->prepare("SELECT id, education FROM educations");
+
+            $stmt->execute();
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $error) {
+            throw new DatabaseException('Failed to fetch educations data from database');
+        }
+    }
+
+    public function getOccupations()
+    {
+        try {
+            $stmt = $this->pdo->prepare("SELECT id, occupation FROM occupations");
+
+            $stmt->execute();
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $error) {
+            throw new DatabaseException('Failed to fetch occupations data from database');
+        }
+    }
+
+    public function getFamilyRoles()
+    {
+        try {
+            $stmt = $this->pdo->prepare("SELECT id, role FROM family_roles");
+
+            $stmt->execute();
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $error) {
+            throw new DatabaseException('Failed to fetch family roles data from database');
         }
     }
 }

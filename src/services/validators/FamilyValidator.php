@@ -6,12 +6,12 @@ use App\Exceptions\ValidationException;
 
 class FamilyValidator
 {
-    public function validation(string $familyId, string $address, string $neighborhoodUnit, string $communityUnit)
+    public function validation(string $familyCardNumber, string $address, string $neighborhoodUnit, string $communityUnit)
     {
-        if (empty($familyId)) {
-            throw new ValidationException('Family ID cannot be empty');
-        } else if (strlen($familyId) !== 16) {
-            throw new ValidationException('Family ID must have a length of 16 numbers');
+        if (empty($familyCardNumber)) {
+            throw new ValidationException('Family Card Number cannot be empty');
+        } else if (strlen($familyCardNumber) !== 16) {
+            throw new ValidationException('Family Card Number must have a length of 16 numbers');
         }
 
         if (empty($address)) {

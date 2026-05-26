@@ -16,7 +16,7 @@ class ResidentValidator
         $this->referenceRepository = $referenceRepository;
     }
 
-    public function validation(string $identityNumber, string $fullname, string $gender, int $birthplaceId, string $birthdate, int $religionId, int $educationLevelId, int $occupationId, int $familyRoleId, string $maritalStatus, string $familyId)
+    public function validation(string $identityNumber, string $fullname, string $gender, int $birthplaceId, string $birthdate, int $religionId, int $educationId, int $occupationId, int $familyRoleId, string $maritalStatus, string $familyCardNumber)
     {
         if (empty($identityNumber)) {
             throw new ValidationException('Identity number cannot be empty');
@@ -50,9 +50,9 @@ class ResidentValidator
             throw new ValidationException('Invalid religion option');
         }
 
-        if (empty($educationLevelId)) {
-            throw new ValidationException('Education level cannot be empty');
-        } else if (!$this->referenceRepository->exists('education_levels', $educationLevelId)) {
+        if (empty($educationId)) {
+            throw new ValidationException('Education cannot be empty');
+        } else if (!$this->referenceRepository->exists('educations', $educationId)) {
             throw new ValidationException('Invalid education level option');
         }
 
@@ -74,9 +74,9 @@ class ResidentValidator
             throw new ValidationException('Invalid marital status option');
         }
 
-        if (empty($familyId)) {
+        if (empty($familyCardNumber)) {
             throw new ValidationException('Family ID cannot be empty');
-        } else if (strlen($familyId) !== 16) {
+        } else if (strlen($familyCardNumber) !== 16) {
             throw new ValidationException('Family ID must have a length of 16 numbers');
         }
     }
