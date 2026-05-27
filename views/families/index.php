@@ -41,7 +41,7 @@
                         <?php foreach ($families as $family): ?>
                             <tr>
                                 <td>
-                                    <a href="/families/detail?familyCardNumber=<?= $family['family_card_number'] ?>">
+                                    <a href="/families/detail?id=<?= $family['id'] ?>&familyCardNumber=<?= $family['family_card_number'] ?>">
                                         <?= $family['family_card_number']; ?>
                                     </a>
                                 </td>

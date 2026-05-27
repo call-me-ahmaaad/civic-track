@@ -89,10 +89,11 @@ class FamilyController
             exit();
         }
 
+        $id = $_GET['id'];
         $familyCardNumber = $_GET['familyCardNumber'];
 
         try {
-            $family = $this->familyRepository->findByFamilyCardNumber($familyCardNumber);
+            $family = $this->familyRepository->findById($id);
             $residents = $this->residentRepository->findByFamilyCardNumber($familyCardNumber);
 
             require __DIR__ . '/../../views/families/detail.php';
@@ -116,18 +117,13 @@ class FamilyController
             exit();
         }
 
-        $familyCardNumber = $_GET['familyCardNumber'];
+        $id = $_GET['id'];
 
         try {
-            $family = $this->familyRepository->findByFamilyCardNumber($familyCardNumber);
+            $family = $this->familyRepository->findById($id);
 
             require __DIR__ . '/../../views/families/edit.php';
-        } catch (NotFoundException $error) {
-            $_SESSION['error'] = $error->getMessage();
-
-            header('Location: /families/detail?familyCardNumber=' . $familyCardNumber);
-            exit();
-        } catch (DatabaseException $error) {
+        } catch (NotFoundException | DatabaseException $error) {
             $_SESSION['error'] = $error->getMessage();
 
             header('Location: /families');
@@ -165,7 +161,7 @@ class FamilyController
         } catch (ValidationException $error) {
             $_SESSION['error'] = $error->getMessage();
 
-            header('Location: /families/edit?familyCardNumber=' . $familyCardNumber);
+            header('Location: /families/edit?id=' . $id);
             exit();
         }
     }
@@ -178,7 +174,6 @@ class FamilyController
         }
 
         $id = $_POST['id'];
-        $familyCardNumber = $_POST['familyCardNumber'];
 
         try {
             $this->familyRepository->delete($id);

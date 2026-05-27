@@ -25,6 +25,10 @@ class AuthController
         $password = $_POST['password'];
 
         try {
+            if(empty($username) || empty($password)){
+                throw new AuthException("Username or password cannot be empty");
+            }
+
             $user = $this->userRepository->findByUsername($username);
 
             $status = password_verify($password, $user['password']);
@@ -37,7 +41,7 @@ class AuthController
                 header('Location: /');
                 exit();
             } else {
-                throw new AuthException("Invalid username or password");
+                throw new AuthException("Invalid password");
             }
         } catch (AuthException | NotFoundException $error) {
             $_SESSION['error'] = $error->getMessage();

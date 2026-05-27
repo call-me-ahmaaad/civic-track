@@ -123,7 +123,7 @@
                     <div class="form__buttons">
                         <button type="submit" class="form__button form__button--submit">Edit</button>
                         <a class="form__button form__button--cancel"
-                            href="/residents/detail?identityNumber=<?= $resident['identity_number']; ?>">Cancel</a>
+                            href="/residents/detail?id=<?= $resident['id']; ?>">Cancel</a>
                     </div>
                 </form>
             </div>

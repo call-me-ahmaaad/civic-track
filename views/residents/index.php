@@ -42,12 +42,12 @@
                         <?php foreach ($residents as $resident): ?>
                             <tr>
                                 <td>
-                                    <a href="/residents/detail?identityNumber=<?= $resident['identity_number']; ?>">
+                                    <a href="/residents/detail?id=<?= $resident['resident_id']; ?>">
                                         <?= $resident['identity_number']; ?>
                                     </a>
                                 </td>
                                 <td>
-                                    <a href="/families/detail?familyCardNumber=<?= $resident['family_card_number']; ?>">
+                                    <a href="/families/detail?id=<?= $resident['family_id']; ?>">
                                         <?= $resident['family_card_number']; ?>
                                     </a>
                                 </td>

@@ -30,13 +30,13 @@ class FamilyRepository
         }
     }
 
-    public function findByFamilyCardNumber(string $familyCardNumber)
+    public function findById(int $id)
     {
         try {
-            $stmt = $this->pdo->prepare("SELECT id, family_card_number, address, neighborhood_unit, community_unit, created_at, updated_at FROM families WHERE family_card_number = :family_card_number");
+            $stmt = $this->pdo->prepare("SELECT id, family_card_number, address, neighborhood_unit, community_unit, created_at, updated_at FROM families WHERE id = :id");
 
             $stmt->execute([
-                ":family_card_number" => $familyCardNumber
+                ":id" => $id
             ]);
 
             $result = $stmt->fetch(PDO::FETCH_ASSOC);

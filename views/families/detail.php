@@ -53,11 +53,10 @@
                     </div>
                 </div>
                 <div class="form__buttons">
-                    <a href="/families/edit?familyCardNumber=<?= $family['family_card_number']; ?>"
+                    <a href="/families/edit?id=<?= $family['id']; ?>"
                         class="form__button form__button--edit">Edit</a>
                     <form id="deleteForm" action="/families/destroy" method="post">
                         <input type="hidden" name="id" value="<?= $family['id']; ?>">
-                        <input type="hidden" name="familyCardNumber" value="<?= $family['family_card_number']; ?>">
                         <button type="submit" class="form__button form__button--delete">Delete</button>
                     </form>
                 </div>
@@ -79,7 +78,7 @@
                         <?php foreach ($residents as $resident): ?>
                             <tr>
                                 <td>
-                                    <a href="/residents/detail?identityNumber=<?= $resident['identity_number']; ?>">
+                                    <a href="/residents/detail?id=<?= $resident['id']; ?>">
                                         <?= $resident['identity_number']; ?>
                                     </a>
                                 </td>

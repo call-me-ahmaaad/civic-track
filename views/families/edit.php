@@ -56,11 +56,11 @@
                     <div class="form__buttons">
                         <button type="submit" class="form__button form__button--submit">Edit</button>
                         <a class="form__button form__button--cancel"
-                            href="/families/detail?familyCardNumber=<?= $family['family_card_number'] ?>">Cancel</a>
+                            href="/families/detail?id=<?= $family['id'] ?>">Cancel</a>
                     </div>
                 </form>
             </div>
-            
+
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
             <?php require __DIR__ . '/../components/alerts/info.php' ?>

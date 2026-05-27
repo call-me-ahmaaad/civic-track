@@ -79,11 +79,10 @@
                     </div>
                 </div>
                 <div class="form__buttons">
-                    <a href="/residents/edit?identityNumber=<?= $resident['identity_number']; ?>"
+                    <a href="/residents/edit?id=<?= $resident['id']; ?>"
                         class="form__button form__button--edit">Edit</a>
                     <form id="deleteForm" action="/residents/destroy" method="post">
                         <input type="hidden" name="id" value="<?= $resident['id']; ?>">
-                        <input type="hidden" name="identityNumber" value="<?= $resident['identity_number']; ?>">
                         <button type="submit" class="form__button form__button--delete">Delete</button>
                     </form>
                 </div>

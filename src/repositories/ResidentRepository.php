@@ -19,7 +19,9 @@ class ResidentRepository
     {
         try {
             $stmt = $this->pdo->prepare(
-                "SELECT id, identity_number, fullname, gender, birthdate, family_card_number FROM residents"
+                "SELECT residents.id as resident_id, identity_number, fullname, gender, birthdate, families.id as family_id, residents.family_card_number as family_card_number
+                FROM residents
+                INNER JOIN families ON residents.family_card_number = families.family_card_number"
             );
 
             $stmt->execute();
@@ -36,7 +38,7 @@ class ResidentRepository
     {
         try {
             $stmt = $this->pdo->prepare(
-                "SELECT identity_number, fullname, gender, birthdate, family_card_number, family_roles.role AS family_role
+                "SELECT residents.id as id, identity_number, fullname, gender, birthdate, family_card_number, family_roles.role AS family_role
                 FROM residents 
                 INNER JOIN family_roles ON family_roles.id = residents.family_role_id
                 WHERE family_card_number = :family_card_number"
@@ -54,7 +56,7 @@ class ResidentRepository
         }
     }
 
-    public function findByIdentityNumber(string $identityNumber)
+    public function findById(int $id)
     {
         try {
             $stmt = $this->pdo->prepare(
@@ -65,11 +67,11 @@ class ResidentRepository
                 INNER JOIN educations ON educations.id = residents.education_id
                 INNER JOIN occupations ON occupations.id = residents.occupation_id
                 INNER JOIN family_roles ON family_roles.id = residents.family_role_id
-                WHERE identity_number = :identity_number"
+                WHERE residents.id = :id"
             );
 
             $stmt->execute([
-                ":identity_number" => $identityNumber
+                ":id" => $id
             ]);
 
             $result = $stmt->fetch(PDO::FETCH_ASSOC);

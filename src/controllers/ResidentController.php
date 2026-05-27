@@ -126,10 +126,10 @@ class ResidentController
             exit();
         }
 
-        $identityNumber = $_GET['identityNumber'];
+        $id = $_GET['id'];
 
         try {
-            $resident = $this->residentRepository->findByIdentityNumber($identityNumber);
+            $resident = $this->residentRepository->findById($id);
 
             require __DIR__ . '/../../views/residents/detail.php';
         } catch (NotFoundException $error) {
@@ -152,7 +152,7 @@ class ResidentController
             exit();
         }
 
-        $identityNumber = $_GET['identityNumber'];
+        $id = $_GET['id'];
 
         $cities = $this->referenceRepository->getCities();
         $religions = $this->referenceRepository->getReligions();
@@ -161,15 +161,10 @@ class ResidentController
         $familyRoles = $this->referenceRepository->getFamilyRoles();
 
         try {
-            $resident = $this->residentRepository->findByIdentityNumber($identityNumber);
+            $resident = $this->residentRepository->findById($id);
 
             require __DIR__ . '/../../views/residents/edit.php';
-        } catch (NotFoundException $error) {
-            $_SESSION['error'] = $error->getMessage();
-
-            header('Location: /residents');
-            exit();
-        } catch (DatabaseException $error) {
+        } catch (NotFoundException | DatabaseException  $error) {
             $_SESSION['error'] = $error->getMessage();
 
             header('Location: /residents');
@@ -239,7 +234,7 @@ class ResidentController
         } catch (ValidationException $error) {
             $_SESSION['error'] = $error->getMessage();
 
-            header('Location: /residents/edit?identityNumber=' . $identityNumber);
+            header('Location: /residents/edit?id=' . $id);
             exit();
         }
     }
@@ -252,7 +247,6 @@ class ResidentController
         }
 
         $id = (int) $_POST['id'];
-        $identityNumber = $_POST['identityNumber'];
 
         try {
             $this->residentRepository->delete($id);
