@@ -40,13 +40,23 @@ lot building it — from architecture decisions and OOP principles down to
 syntax and debugging. There's still plenty to improve, and I'll get back 
 to it when time allows.
 
+### ℹ️ P.S.: Most of the changes in this version happened behind the scenes.
+
+The previous version was already functional, but a large part of the project has since been reworked to improve its structure and maintainability. Models are now used throughout the application and handle their own validation where it makes sense, while additional validation still exists for business rules and database-related constraints. Controllers have also become much cleaner thanks to the introduction of dedicated service classes.
+
+A few other parts of the project were revisited as well. The alert system was redesigned to provide a more consistent experience across the application, the database layer was moved into the Infrastructure directory, and configuration files were replaced with environment variables.
+
+On the front-end side, I honestly did not make as many improvements as I would have liked. CSS organization and color palette choices are still areas where I have a lot to learn. The interface is more consistent than before, but it is probably the part of the project that still needs the most work moving forward.
+
+Still the same CivicTrack, just built with a little more experience than before.
+
 ---
 
 ## ✨ Features
 
 - 👨‍👩‍👧‍👦 Family management — add, edit, and delete family records
-- 🪪 Resident management — add, edit, and delete resident data
-- 🔍 Search residents by name or National ID Number
+- 🪪 Resident management — add, edit, and delete resident records
+- 🔍 Search residents or families by various types of data
 - 📊 Dashboard with resident statistics — total family, total residents, gender, religion, education, and occupation breakdown
 - 🔐 Admin authentication
 
@@ -67,45 +77,46 @@ to it when time allows.
 ```
 CivicTrack/
 ├── bootstrap/                  # App initialization
-│   └── app.php                 # Dependency injection & controller setup
+│   ├── app.php                 # DI container & controller wiring
+│   └── database.php            # Database bootstrap
 │
-├── config/                     # Configuration files
-│   ├── database.example.php    # Database config template
-│   └── database.php            # Database config (not tracked)
-│
-├── public/                     # Web server entry point
+├── public/                     # Web server document root
 │   ├── css/
-│   │   ├── components/         # Reusable component styles (form-field, table)
-│   │   ├── pages/              # Page-specific styles (auth, dashboard, families, residents)
-│   │   ├── base.css            # Base styles & CSS variables
-│   │   ├── error.css           # Error page styles
-│   │   ├── layout.css          # Sidebar & content layout
-│   │   └── reset.css           # CSS reset
-│   ├── img/                    # Images & icons
-│   ├── js/                     # JavaScript files
-│   ├── .htaccess               # Apache rewrite rules
+│   │   ├── components/         # Reusable component styles
+│   │   ├── pages/              # Page-specific styles (per domain)
+│   │   ├── base.css
+│   │   ├── error.css
+│   │   ├── layout.css
+│   │   └── reset.css
+│   ├── img/
+│   ├── js/
+│   │   ├── tables/             # DataTable initializations
+│   │   ├── validations/        # Client-side form validations (per domain)
+│   │   └── alert.js
+│   ├── .htaccess
 │   └── index.php               # Application entry point
 │
 ├── routes/
-│   └── web.php                 # Route definitions
+│   └── web.php
 │
 ├── src/
-│   ├── controllers/            # Request handlers
-│   ├── exceptions/             # Custom exception classes
-│   ├── helpers/                # Database connection helper
+│   ├── controllers/
+│   ├── exceptions/
+│   ├── infrastructure/         # Low-level technical concerns (DB wrapper)
+│   ├── models/
 │   ├── repositories/           # Database query operations
 │   └── services/
-│       ├── validators/         # Input validation
-│       └── AgeService.php      # Age calculation & categorization
+│       └── validators/
 │
 ├── views/
-│   ├── auth/                   # Login page
-│   ├── components/             # Reusable view components (sidebar, alerts)
-│   ├── dashboard/              # Dashboard page
-│   ├── errors/                 # Error pages
-│   ├── families/               # Family CRUD pages
-│   └── residents/              # Resident CRUD pages
+│   ├── auth/
+│   ├── components/             # Reusable view components
+│   ├── dashboard/
+│   ├── errors/
+│   ├── families/
+│   └── residents/
 │
+├── .env.example
 ├── composer.json
 └── README.md
 ```
