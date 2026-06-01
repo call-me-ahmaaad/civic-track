@@ -1,3 +1,6 @@
+<?php /** @var App\Models\Family $family */ ?>
+<?php /** @var App\Models\Resident[] $residents */ ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -29,35 +32,34 @@
                 <div class="detail__data">
                     <div class="form-field form-field--family-card-number" readonly>
                         <label class="form-field__label">Family Card Number</label>
-                        <input class="form-field__value" value="<?= $family['family_card_number']; ?>" readonly>
+                        <input class="form-field__value" value="<?= $family->getFamilyCardNumber() ?>" readonly>
                     </div>
                     <div class="form-field form-field--address">
                         <label class="form-field__label">Address</label>
-                        <input class="form-field__value" value="<?= $family['address']; ?>" readonly>
+                        <input class="form-field__value" value="<?= $family->getAddress() ?>" readonly>
                     </div>
                     <div class="form-field form-field--neighborhood-unit">
                         <label class="form-field__label">Neighborhood Unit</label>
-                        <input class="form-field__value" value="<?= $family['neighborhood_unit']; ?>" readonly>
+                        <input class="form-field__value" value="<?= $family->getNeighborhoodUnit() ?>" readonly>
                     </div>
                     <div class="form-field form-field--community-unit">
                         <label class="form-field__label">Community Unit</label>
-                        <input class="form-field__value" value="<?= $family['community_unit']; ?>" readonly>
+                        <input class="form-field__value" value="<?= $family->getCommunityUnit() ?>" readonly>
                     </div>
                     <div class="form-field form-field--created-at">
                         <label class="form-field__label">Created at</label>
-                        <input class="form-field__value" value="<?= $family['created_at']; ?>" readonly>
+                        <input class="form-field__value" value="<?= $family->getCreatedAt() ?>" readonly>
                     </div>
                     <div class="form-field form-field--updated-at">
                         <label class="form-field__label">Updated at</label>
-                        <input class="form-field__value" value="<?= $family['updated_at']; ?>" readonly>
+                        <input class="form-field__value" value="<?= $family->getUpdatedAt() ?>" readonly>
                     </div>
                 </div>
                 <div class="form__buttons">
-                    <a href="/families/edit?id=<?= $family['id']; ?>"
-                        class="form__button form__button--edit">Edit</a>
+                    <a href="/families/edit?id=<?= $family->getId() ?>" class="form__button form__button--edit">Edit</a>
                     <form id="deleteForm" action="/families/destroy" method="post">
-                        <input type="hidden" name="id" value="<?= $family['id']; ?>">
-                        <button type="submit" class="form__button form__button--delete">Delete</button>
+                        <input type="hidden" name="id" value="<?= $family->getId() ?>">
+                        <button type="submit" class="form__button form__button--delete" id="delete-btn">Delete</button>
                     </form>
                 </div>
             </div>
@@ -75,24 +77,25 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <?php /** @var App\Models\Resident $resident */ ?>
                         <?php foreach ($residents as $resident): ?>
                             <tr>
                                 <td>
-                                    <a href="/residents/detail?id=<?= $resident['id']; ?>">
-                                        <?= $resident['identity_number']; ?>
+                                    <a href="/residents/detail?id=<?= $resident->getId() ?>">
+                                        <?= $resident->getIdentityNumber() ?>
                                     </a>
                                 </td>
                                 <td>
-                                    <?= $resident['fullname']; ?>
+                                    <?= $resident->getFullname() ?>
                                 </td>
                                 <td>
-                                    <?= $resident['gender']; ?>
+                                    <?= $resident->getGender() ?>
                                 </td>
                                 <td>
-                                    <?= $resident['birthdate']; ?>
+                                    <?= $resident->getBirthdate() ?>
                                 </td>
                                 <td>
-                                    <?= $resident['family_role']; ?>
+                                    <?= $resident->getFamilyRole() ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -102,13 +105,14 @@
         </main>
     </div>
 
+    <?php require __DIR__ . '/../components/alert.php' ?>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/2.2.2/js/dataTables.min.js"></script>
-    <script src="/js/residentsTable.js"></script>
-
-    <?php require __DIR__ . '/../components/alerts/info.php' ?>
-    <?php require __DIR__ . '/../components/alerts/delete.php' ?>
+    <script src="/js/tables/residentsTable.js"></script>
+    <script src="/js/validations/families/delete.js"></script>
+    <script src="/js/alert.js"></script>
 </body>
 
 </html>

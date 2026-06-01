@@ -3,20 +3,15 @@
 namespace App\Controllers;
 
 use App\Exceptions\{NotFoundException, DatabaseException, ValidationException};
-use App\Repositories\{ResidentRepository, ReferenceRepository};
-use App\Services\Validators\ResidentValidator;
+use App\Services\ResidentService;
 
 class ResidentController
 {
-    private ResidentRepository $residentRepository;
-    private ResidentValidator $residentValidator;
-    private ReferenceRepository $referenceRepository;
+    private ResidentService $residentService;
 
-    public function __construct(ResidentRepository $residentRepository, ResidentValidator $residentValidator, ReferenceRepository $referenceRepository)
+    public function __construct(ResidentService $residentService)
     {
-        $this->residentRepository = $residentRepository;
-        $this->residentValidator = $residentValidator;
-        $this->referenceRepository = $referenceRepository;
+        $this->residentService = $residentService;
     }
 
     public function index()
@@ -27,7 +22,7 @@ class ResidentController
         }
 
         try {
-            $residents = $this->residentRepository->findAll();
+            $residents = $this->residentService->getAllResidents();
 
             require __DIR__ . '/../../views/residents/index.php';
         } catch (DatabaseException $error) {
@@ -45,11 +40,18 @@ class ResidentController
             exit();
         }
 
-        $cities = $this->referenceRepository->getCities();
-        $religions = $this->referenceRepository->getReligions();
-        $educations = $this->referenceRepository->getEducations();
-        $occupations = $this->referenceRepository->getOccupations();
-        $familyRoles = $this->referenceRepository->getFamilyRoles();
+        try {
+            $dropdown = $this->residentService->getDropdownValues();
+        } catch (DatabaseException $error) {
+            $_SESSION['alert'] = [
+                'icon' => 'error',
+                'title' => 'Failed to Load Resident Form',
+                'text' => 'Unable to load the resident creation form. Please try again.'
+            ];
+
+            header('Location: /residents');
+            exit();
+        }
 
         require __DIR__ . '/../../views/residents/create.php';
     }
@@ -61,58 +63,46 @@ class ResidentController
             exit();
         }
 
-        $identityNumber = $_POST['identityNumber'];
-        $fullname = $_POST['fullname'];
-        $gender = $_POST['gender'];
-        $birthplaceId = (int) $_POST['birthplace'];
-        $birthdate = $_POST['birthdate'];
-        $religionId = (int) $_POST['religion'];
-        $educationId = (int) $_POST['education'];
-        $occupationId = (int) $_POST['occupation'];
-        $familyRoleId = (int) $_POST['familyRole'];
-        $maritalStatus = $_POST['maritalStatus'];
-        $familyCardNumber = $_POST['familyCardNumber'];
+        $resident = [
+            "identity_number" => trim($_POST['identityNumber']),
+            "fullname" => trim($_POST['fullname']),
+            "gender" => trim($_POST['gender']),
+            "birthplace_id" => (int) $_POST['birthplace'],
+            "birthdate" => trim($_POST['birthdate']),
+            "religion_id" => (int) $_POST['religion'],
+            "education_id" => (int) $_POST['education'],
+            "occupation_id" => (int) $_POST['occupation'],
+            "family_role_id" => (int) $_POST['familyRole'],
+            "marital_status" => trim($_POST['maritalStatus']),
+            "family_card_number" => trim($_POST['familyCardNumber'])
+        ];
 
         try {
-            $this->residentValidator->validation(
-                $identityNumber,
-                $fullname,
-                $gender,
-                $birthplaceId,
-                $birthdate,
-                $religionId,
-                $educationId,
-                $occupationId,
-                $familyRoleId,
-                $maritalStatus,
-                $familyCardNumber
-            );
+            $this->residentService->createResident($resident);
 
-            $this->residentRepository->save(
-                $identityNumber,
-                $fullname,
-                $gender,
-                $birthplaceId,
-                $birthdate,
-                $religionId,
-                $educationId,
-                $occupationId,
-                $familyRoleId,
-                $maritalStatus,
-                $familyCardNumber
-            );
-
-            $_SESSION['success'] = "Successfully inserted a new resident.";
+            $_SESSION['alert'] = [
+                'icon' => 'success',
+                'title' => 'Resident Record Created',
+                'text' => 'The resident record has been created successfully.'
+            ];
 
             header('Location: /residents');
             exit();
         } catch (DatabaseException $error) {
-            $_SESSION['error'] = $error->getMessage();
+            $_SESSION['alert'] = [
+                'icon' => 'error',
+                'title' => 'Failed to Create Resident Record',
+                'text' => 'Unable to create the resident record. Please try again.'
+            ];
 
             header('Location: /residents');
             exit();
         } catch (ValidationException $error) {
-            $_SESSION['error'] = $error->getMessage();
+            $_SESSION['alert'] = [
+                'icon' => 'error',
+                'title' => 'Failed to Create Resident Record',
+                'text' => $error->getMessage()
+            ];
 
             header('Location: /residents/create');
             exit();
@@ -126,19 +116,27 @@ class ResidentController
             exit();
         }
 
-        $id = $_GET['id'];
+        $id = (int) $_GET['id'];
 
         try {
-            $resident = $this->residentRepository->findById($id);
+            $resident = $this->residentService->getResidentById($id);
 
             require __DIR__ . '/../../views/residents/detail.php';
         } catch (NotFoundException $error) {
-            $_SESSION['error'] = $error->getMessage();
+            $_SESSION['alert'] = [
+                'icon' => 'error',
+                'title' => 'Resident Record Not Found',
+                'text' => $error->getMessage()
+            ];
 
             header('Location: /residents');
             exit();
         } catch (DatabaseException $error) {
-            $_SESSION['error'] = $error->getMessage();
+            $_SESSION['alert'] = [
+                'icon' => 'error',
+                'title' => 'Failed to Load Resident Record',
+                'text' => 'Unable to load the resident record. Please try again.'
+            ];
 
             header('Location: /residents');
             exit();
@@ -152,20 +150,29 @@ class ResidentController
             exit();
         }
 
-        $id = $_GET['id'];
-
-        $cities = $this->referenceRepository->getCities();
-        $religions = $this->referenceRepository->getReligions();
-        $educations = $this->referenceRepository->getEducations();
-        $occupations = $this->referenceRepository->getOccupations();
-        $familyRoles = $this->referenceRepository->getFamilyRoles();
+        $id = (int) $_GET['id'];
 
         try {
-            $resident = $this->residentRepository->findById($id);
+            $dropdown = $this->residentService->getDropdownValues();
+
+            $resident = $this->residentService->getResidentById($id);
 
             require __DIR__ . '/../../views/residents/edit.php';
-        } catch (NotFoundException | DatabaseException  $error) {
-            $_SESSION['error'] = $error->getMessage();
+        } catch (NotFoundException $error) {
+            $_SESSION['alert'] = [
+                'icon' => 'error',
+                'title' => 'Resident Record Not Found',
+                'text' => $error->getMessage()
+            ];
+
+            header('Location: /residents');
+            exit();
+        } catch (DatabaseException $error) {
+            $_SESSION['alert'] = [
+                'icon' => 'error',
+                'title' => 'Failed to Load Resident Record',
+                'text' => 'Unable to load the resident record. Please try again.'
+            ];
 
             header('Location: /residents');
             exit();
@@ -179,62 +186,49 @@ class ResidentController
             exit();
         }
 
-        $id = (int) $_POST['id'];
-        $identityNumber = $_POST['identityNumber'];
-        $fullname = $_POST['fullname'];
-        $gender = $_POST['gender'];
-        $birthplaceId = (int) $_POST['birthplace'];
-        $birthdate = $_POST['birthdate'];
-        $religionId = (int) $_POST['religion'];
-        $educationId = (int) $_POST['education'];
-        $occupationId = (int) $_POST['occupation'];
-        $familyRoleId = (int) $_POST['familyRole'];
-        $maritalStatus = $_POST['maritalStatus'];
-        $familyCardNumber = $_POST['familyCardNumber'];
+        $resident = [
+            "id" => (int) $_POST['id'],
+            "identity_number" => trim($_POST['identityNumber']),
+            "fullname" => trim($_POST['fullname']),
+            "gender" => trim($_POST['gender']),
+            "birthplace_id" => (int) $_POST['birthplace'],
+            "birthdate" => trim($_POST['birthdate']),
+            "religion_id" => (int) $_POST['religion'],
+            "education_id" => (int) $_POST['education'],
+            "occupation_id" => (int) $_POST['occupation'],
+            "family_role_id" => (int) $_POST['familyRole'],
+            "marital_status" => trim($_POST['maritalStatus']),
+            "family_card_number" => trim($_POST['familyCardNumber'])
+        ];
 
         try {
-            $this->residentValidator->validation(
-                $identityNumber,
-                $fullname,
-                $gender,
-                $birthplaceId,
-                $birthdate,
-                $religionId,
-                $educationId,
-                $occupationId,
-                $familyRoleId,
-                $maritalStatus,
-                $familyCardNumber
-            );
+            $this->residentService->updateResident($resident);
 
-            $this->residentRepository->update(
-                $id,
-                $identityNumber,
-                $fullname,
-                $gender,
-                $birthplaceId,
-                $birthdate,
-                $religionId,
-                $educationId,
-                $occupationId,
-                $familyRoleId,
-                $maritalStatus,
-                $familyCardNumber
-            );
-
-            $_SESSION['success'] = "Successfully updated a resident data";
+            $_SESSION['alert'] = [
+                'icon' => 'success',
+                'title' => 'Resident Record Updated',
+                'text' => 'The resident record has been updated successfully.'
+            ];
 
             header('Location: /residents');
             exit();
         } catch (DatabaseException $error) {
-            $_SESSION['error'] = $error->getMessage();
+            $_SESSION['alert'] = [
+                'icon' => 'error',
+                'title' => 'Failed to Update Resident Record',
+                'text' => 'Unable to update the resident record. Please try again.'
+            ];
 
             header('Location: /residents');
             exit();
         } catch (ValidationException $error) {
-            $_SESSION['error'] = $error->getMessage();
+            $_SESSION['alert'] = [
+                'icon' => 'error',
+                'title' => 'Failed to Update Resident Record',
+                'text' => $error->getMessage()
+            ];
 
-            header('Location: /residents/edit?id=' . $id);
+            header('Location: /residents/edit?id=' . $resident['id']);
             exit();
         }
     }
@@ -249,14 +243,31 @@ class ResidentController
         $id = (int) $_POST['id'];
 
         try {
-            $this->residentRepository->delete($id);
+            $this->residentService->deleteResident($id);
 
-            $_SESSION['success'] = "Successfully deleted a resident data";
+            $_SESSION['alert'] = [
+                'icon' => 'success',
+                'title' => 'Resident Record Deleted',
+                'text' => 'The resident record has been deleted successfully.'
+            ];
 
             header('Location: /residents');
             exit();
         } catch (DatabaseException $error) {
-            $_SESSION['error'] = $error->getMessage();
+            $_SESSION['alert'] = [
+                'icon' => 'error',
+                'title' => 'Failed to Delete Resident Record',
+                'text' => 'Unable to delete the resident record. Please try again.'
+            ];
+
+            header('Location: /residents');
+            exit();
+        } catch (ValidationException $error) {
+            $_SESSION['alert'] = [
+                'icon' => 'error',
+                'title' => 'Failed to Delete Resident Record',
+                'text' => $error->getMessage()
+            ];
 
             header('Location: /residents');
             exit();

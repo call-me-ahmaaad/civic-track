@@ -26,7 +26,7 @@ class StatisticRepository
 
             return $result;
         } catch (PDOException $error) {
-            throw new DatabaseException('Failed to get total of family from database');
+            throw new DatabaseException('Failed to get total of family from database.');
         }
     }
 
@@ -41,7 +41,7 @@ class StatisticRepository
 
             return $result;
         } catch (PDOException $error) {
-            throw new DatabaseException('Failed to get total of resident from database');
+            throw new DatabaseException('Failed to get total of resident from database.');
         }
     }
 
@@ -60,7 +60,7 @@ class StatisticRepository
 
             return $result ?: [];
         } catch (PDOException $error) {
-            throw new DatabaseException('Failed to get total of each gender from database');
+            throw new DatabaseException('Failed to get total of each gender from database.');
         }
     }
 
@@ -81,7 +81,7 @@ class StatisticRepository
 
             return $result ?: [];
         } catch (PDOException $error) {
-            throw new DatabaseException('Failed to get total of each religion from database');
+            throw new DatabaseException('Failed to get total of each religion from database.');
         }
     }
 
@@ -104,7 +104,7 @@ class StatisticRepository
 
             return $result ?: [];
         } catch (PDOException $error) {
-            throw new DatabaseException('Failed to get total of each occupation from database');
+            throw new DatabaseException('Failed to get total of each occupation from database.');
         }
     }
 
@@ -125,11 +125,11 @@ class StatisticRepository
 
             return $result ?: [];
         } catch (PDOException $error) {
-            throw new DatabaseException('Failed to get total of each education from database');
+            throw new DatabaseException('Failed to get total of each education from database.');
         }
     }
 
-    public function getBirthdate()
+    public function getBirthdates()
     {
         try {
             $stmt = $this->pdo->prepare(
@@ -142,7 +142,7 @@ class StatisticRepository
 
             return $result ?: [];
         } catch (PDOException $error) {
-            throw new DatabaseException('Failed to get birthdate from database');
+            throw new DatabaseException('Failed to get birthdates from database.');
         }
     }
 }

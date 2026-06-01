@@ -27,12 +27,12 @@ class UserRepository
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$result) {
-                throw new NotFoundException("Username $username isn't registered as admin");
+                throw new NotFoundException("Username '$username' isn't registered as admin.");
             }
 
             return $result;
         } catch (PDOException $error) {
-            throw new DatabaseException('Failed to fetch a user data from database');
+            throw new DatabaseException('Failed to fetch a user data from database.');
         }
     }
 }

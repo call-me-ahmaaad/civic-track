@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Exceptions\{DatabaseException, NotFoundException};
+use App\Models\Resident;
 use PDO;
 use PDOException;
 
@@ -26,11 +27,24 @@ class ResidentRepository
 
             $stmt->execute();
 
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            return $result ?: [];
+            $residents = array_map(function ($result) {
+                $resident = new Resident();
+                $resident->setId($result['resident_id']);
+                $resident->setIdentityNumber($result['identity_number']);
+                $resident->setFullname($result['fullname']);
+                $resident->setGender($result['gender']);
+                $resident->setBirthdate($result['birthdate']);
+                $resident->setFamilyId($result['family_id']);
+                $resident->setFamilyCardNumber($result['family_card_number']);
+
+                return $resident;
+            }, $results);
+
+            return $residents ?: [];
         } catch (PDOException $error) {
-            throw new DatabaseException('Failed to fetch residents data from database');
+            throw new DatabaseException('Failed to fetch resident records from database.');
         }
     }
 
@@ -48,11 +62,24 @@ class ResidentRepository
                 ":family_card_number" => $familyCardNumber
             ]);
 
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            return $result ?: [];
+            $residents = array_map(function ($result) {
+                $resident = new Resident();
+                $resident->setId($result['id']);
+                $resident->setIdentityNumber($result['identity_number']);
+                $resident->setFullname($result['fullname']);
+                $resident->setGender($result['gender']);
+                $resident->setBirthdate($result['birthdate']);
+                $resident->setFamilyCardNumber($result['family_card_number']);
+                $resident->setFamilyRole($result['family_role']);
+
+                return $resident;
+            }, $results);
+
+            return $residents ?: [];
         } catch (PDOException $error) {
-            throw new DatabaseException('Failed to fetch residents data from database');
+            throw new DatabaseException('Failed to fetch resident records from database.');
         }
     }
 
@@ -77,16 +104,63 @@ class ResidentRepository
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$result) {
-                throw new NotFoundException('Resident data not found');
+                throw new NotFoundException('Resident record data not found.');
             }
 
-            return $result;
+            $resident = new Resident();
+            $resident->setId($result['id']);
+            $resident->setIdentityNumber($result['identity_number']);
+            $resident->setFullname($result['fullname']);
+            $resident->setGender($result['gender']);
+            $resident->setBirthplace($result['birthplace']);
+            $resident->setBirthdate($result['birthdate']);
+            $resident->setReligion($result['religion']);
+            $resident->setEducation($result['education']);
+            $resident->setOccupation($result['occupation']);
+            $resident->setFamilyRole($result['family_role']);
+            $resident->setMaritalStatus($result['marital_status']);
+            $resident->setFamilyCardNumber($result['family_card_number']);
+            $resident->setCreatedAt($result['created_at']);
+            $resident->setUpdatedAt($result['updated_at']);
+
+            return $resident;
         } catch (PDOException $error) {
-            throw new DatabaseException('Failed to fetch residents data from database');
+            throw new DatabaseException('Failed to fetch a resident record from database.');
         }
     }
 
-    public function save(string $identityNumber, string $fullname, string $gender, int $birthplaceId, string $birthdate, int $religionId, int $educationId, int $occupationId, int $familyRoleId, string $maritalStatus, string $familyCardNumber)
+    public function isIdentityNumberTaken(string $identityNumber)
+    {
+        try {
+            $stmt = $this->pdo->prepare("SELECT identity_number FROM residents WHERE identity_number = :identity_number");
+
+            $stmt->execute([
+                ":identity_number" => $identityNumber
+            ]);
+
+            return $stmt->fetchColumn() !== false;
+        } catch (PDOException $error) {
+            throw new DatabaseException('Failed to check an identity number from database.');
+        }
+    }
+
+    public function isIdentityNumberTakenByOther(string $identityNumber, int $excludeId)
+    {
+        try {
+            $stmt = $this->pdo->prepare("SELECT identity_number FROM residents WHERE identity_number = :identity_number AND id != :exclude_id");
+
+            $stmt->execute([
+                ":identity_number" => $identityNumber,
+                ":exclude_id" => $excludeId
+            ]);
+
+            return $stmt->fetchColumn() !== false;
+        } catch (PDOException $error) {
+            throw new DatabaseException('Failed to check an identity number from database.');
+        }
+    }
+
+    public function save(Resident $resident)
     {
         try {
             $stmt = $this->pdo->prepare(
@@ -95,24 +169,24 @@ class ResidentRepository
             );
 
             $stmt->execute([
-                ":identity_number" => $identityNumber,
-                ":fullname" => $fullname,
-                ":gender" => $gender,
-                ":birthplace_id" => $birthplaceId,
-                ":birthdate" => $birthdate,
-                ":religion_id" => $religionId,
-                ":education_id" => $educationId,
-                ":occupation_id" => $occupationId,
-                ":family_role_id" => $familyRoleId,
-                ":marital_status" => $maritalStatus,
-                ":family_card_number" => $familyCardNumber
+                ":identity_number" => $resident->getIdentityNumber(),
+                ":fullname" => $resident->getFullname(),
+                ":gender" => $resident->getGender(),
+                ":birthplace_id" => $resident->getBirthplaceId(),
+                ":birthdate" => $resident->getBirthdate(),
+                ":religion_id" => $resident->getReligionId(),
+                ":education_id" => $resident->getEducationId(),
+                ":occupation_id" => $resident->getOccupationId(),
+                ":family_role_id" => $resident->getFamilyRoleId(),
+                ":marital_status" => $resident->getMaritalStatus(),
+                ":family_card_number" => $resident->getFamilyCardNumber()
             ]);
         } catch (PDOException $error) {
-            throw new DatabaseException('Failed to insert a resident data to database');
+            throw new DatabaseException('Failed to insert a resident record to database.');
         }
     }
 
-    public function update(int $id, string $identityNumber, string $fullname, string $gender, int $birthplaceId, string $birthdate, int $religionId, int $educationId, int $occupationId, int $familyRoleId, string $maritalStatus, string $familyCardNumber)
+    public function update(Resident $resident)
     {
         try {
             $stmt = $this->pdo->prepare(
@@ -132,21 +206,25 @@ class ResidentRepository
             );
 
             $stmt->execute([
-                ":identity_number" => $identityNumber,
-                ":fullname" => $fullname,
-                ":gender" => $gender,
-                ":birthplace_id" => $birthplaceId,
-                ":birthdate" => $birthdate,
-                ":religion_id" => $religionId,
-                ":education_id" => $educationId,
-                ":occupation_id" => $occupationId,
-                ":family_role_id" => $familyRoleId,
-                ":marital_status" => $maritalStatus,
-                ":family_card_number" => $familyCardNumber,
-                ":id" => $id
+                ":identity_number" => $resident->getIdentityNumber(),
+                ":fullname" => $resident->getFullname(),
+                ":gender" => $resident->getGender(),
+                ":birthplace_id" => $resident->getBirthplaceId(),
+                ":birthdate" => $resident->getBirthdate(),
+                ":religion_id" => $resident->getReligionId(),
+                ":education_id" => $resident->getEducationId(),
+                ":occupation_id" => $resident->getOccupationId(),
+                ":family_role_id" => $resident->getFamilyRoleId(),
+                ":marital_status" => $resident->getMaritalStatus(),
+                ":family_card_number" => $resident->getFamilyCardNumber(),
+                ":id" => $resident->getId()
             ]);
+
+            if ($stmt->rowCount() === 0) {
+                throw new NotFoundException("Resident not found.");
+            }
         } catch (PDOException $error) {
-            throw new DatabaseException('Failed to update a resident data to database');
+            throw new DatabaseException('Failed to update a resident record to database.');
         }
     }
 
@@ -158,8 +236,12 @@ class ResidentRepository
             $stmt->execute([
                 ":id" => $id,
             ]);
+
+            if ($stmt->rowCount() === 0) {
+                throw new NotFoundException("Resident record not found.");
+            }
         } catch (PDOException $error) {
-            throw new DatabaseException('Failed to delete a resident data from database');
+            throw new DatabaseException('Failed to delete a resident record from database.');
         }
     }
 }

@@ -28,15 +28,18 @@
                     <div class="create__data">
                         <div class="form-field form-field--identity-number" readonly>
                             <label class="form-field__label">Identity Number</label>
-                            <input class="form-field__value" name="identityNumber" type="text">
+                            <input class="form-field__value" name="identityNumber" type="text" id="identityNumber">
+                            <span class="form-field__status" id="identityNumber-status"></span>
                         </div>
                         <div class="form-field form-field--family-card-number">
                             <label class="form-field__label">Family Number</label>
-                            <input class="form-field__value" name="familyCardNumber" type="text">
+                            <input class="form-field__value" name="familyCardNumber" type="text" id="familyCardNumber">
+                            <span class="form-field__status" id="familyCardNumber-status"></span>
                         </div>
                         <div class="form-field form-field--fullname">
                             <label class="form-field__label">Fullname</label>
-                            <input class="form-field__value" name="fullname" type="text">
+                            <input class="form-field__value" name="fullname" type="text" id="fullname">
+                            <span class="form-field__status" id="fullname-status"></span>
                         </div>
                         <div class="form-field form-field--gender">
                             <label class="form-field__label">Gender</label>
@@ -48,8 +51,8 @@
                         <div class="form-field form-field--birthplace">
                             <label class="form-field__label">Birthplace</label>
                             <select class="form-field__value" name="birthplace">
-                                <?php foreach ($cities as $city): ?>
-                                    <option value="<?= $city['id']; ?>"><?= $city['city']; ?></option>
+                                <?php foreach ($dropdown['cities'] as $city): ?>
+                                    <option value="<?= $city['id'] ?>"><?= $city['city'] ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -60,32 +63,32 @@
                         <div class="form-field form-field--religion">
                             <label class="form-field__label">Religion</label>
                             <select class="form-field__value" name="religion">
-                                <?php foreach ($religions as $religion): ?>
-                                    <option value="<?= $religion['id']; ?>"><?= $religion['religion']; ?></option>
+                                <?php foreach ($dropdown['religions'] as $religion): ?>
+                                    <option value="<?= $religion['id'] ?>"><?= $religion['religion'] ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
                         <div class="form-field form-field--education">
                             <label class="form-field__label">Education Level</label>
                             <select class="form-field__value" name="education">
-                                <?php foreach ($educations as $education): ?>
-                                    <option value="<?= $education['id']; ?>"><?= $education['education']; ?></option>
+                                <?php foreach ($dropdown['educations'] as $education): ?>
+                                    <option value="<?= $education['id'] ?>"><?= $education['education'] ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
                         <div class="form-field form-field--occupation">
                             <label class="form-field__label">Occupation</label>
                             <select class="form-field__value" name="occupation">
-                                <?php foreach ($occupations as $occupation): ?>
-                                    <option value="<?= $occupation['id']; ?>"><?= $occupation['occupation']; ?></option>
+                                <?php foreach ($dropdown['occupations'] as $occupation): ?>
+                                    <option value="<?= $occupation['id'] ?>"><?= $occupation['occupation'] ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
                         <div class="form-field form-field--family-role">
                             <label class="form-field__label">Family Role</label>
                             <select class="form-field__value" name="familyRole">
-                                <?php foreach ($familyRoles as $role): ?>
-                                    <option value="<?= $role['id']; ?>"><?= $role['role']; ?></option>
+                                <?php foreach ($dropdown['family_roles'] as $role): ?>
+                                    <option value="<?= $role['id'] ?>"><?= $role['role'] ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -100,7 +103,7 @@
                         </div>
                     </div>
                     <div class="form__buttons">
-                        <button type="submit" class="form__button form__button--submit">Create</button>
+                        <button type="submit" class="form__button form__button--create" id="create-btn">Create</button>
                         <a class="form__button form__button--cancel" href="/residents">Cancel</a>
                     </div>
                 </form>
@@ -108,10 +111,11 @@
         </main>
     </div>
 
+    <?php require __DIR__ . '/../components/alert.php' ?>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
-    <?php require __DIR__ . '/../components/alerts/info.php' ?>
-    <?php require __DIR__ . '/../components/alerts/create.php' ?>
+    <script src="/js/validations/residents/create.js"></script>
+    <script src="/js/alert.js"></script>
 </body>
 
 </html>

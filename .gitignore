@@ -1,2 +1,12 @@
-config/database.php
-vendor
+/vendor
+/.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE/Editor
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace

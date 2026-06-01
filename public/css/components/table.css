@@ -1,6 +1,7 @@
 .content__table {
     width: 100%;
-    border: 2px solid var(--secondary-color);
+    background-color: var(--color-bg-secondary);
+    border: 1px solid var(--color-border-strong);
     border-radius: 7px;
     padding: 20px;
 }
@@ -11,15 +12,36 @@
 }
 
 .content-table__button {
-    padding: 3px 8px;
+    padding: 5px 10px;
     border-radius: 5px;
-    color: var(--text-in-dark);
+}
+
+.content-table__button-text {
+    margin-left: 5px;
 }
 
 .content-table__button--add {
-    background-color: var(--color-btn-default);
+    color: var(--color-text-white);
+    background-color: var(--color-primary);
+    transition: all 0.2s ease;
 }
 
 .content-table__button--add:hover {
-    background-color: var(--color-btn-default-hover);
+    background-color: var(--color-primary-hover);
+    box-shadow: var(--color-primary-shadow);
+}
+
+#familiesTable_wrapper .dt-input, #residentsTable_wrapper .dt-input{
+    padding: 0 10px;
+    height: 35px;
+    border-radius: 5px;
+    background-color: var(--color-bg-surface);
+    border: 2px solid var(--color-border-strong);
+    transition: all 0.2s ease;
+    margin-left: 10px;
+}
+
+#familiesTable_wrapper .dt-input:focus, #residentsTable_wrapper .dt-input:focus{
+    border-color: var(--color-primary-active);
+    box-shadow: 0 0 0 4px var(--color-primary-shadow);
 }

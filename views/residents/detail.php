@@ -1,3 +1,5 @@
+<?php /** @var App\Models\Resident $resident */ ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -27,73 +29,74 @@
                 <div class="detail__data">
                     <div class="form-field form-field--identity-number" readonly>
                         <label class="form-field__label">Identity Number</label>
-                        <input class="form-field__value" value="<?= $resident['identity_number']; ?>" readonly>
+                        <input class="form-field__value" value="<?= $resident->getIdentityNumber() ?>" readonly>
                     </div>
                     <div class="form-field form-field--family-card-number">
                         <label class="form-field__label">Family Number</label>
-                        <input class="form-field__value" value="<?= $resident['family_card_number']; ?>" readonly>
+                        <input class="form-field__value" value="<?= $resident->getFamilyCardNumber() ?>" readonly>
                     </div>
                     <div class="form-field form-field--fullname">
                         <label class="form-field__label">Fullname</label>
-                        <input class="form-field__value" value="<?= $resident['fullname']; ?>" readonly>
+                        <input class="form-field__value" value="<?= $resident->getFullname() ?>" readonly>
                     </div>
                     <div class="form-field form-field--gender">
                         <label class="form-field__label">Gender</label>
-                        <input class="form-field__value" value="<?= $resident['gender']; ?>" readonly>
+                        <input class="form-field__value" value="<?= $resident->getGender() ?>" readonly>
                     </div>
                     <div class="form-field form-field--birthplace">
                         <label class="form-field__label">Birthplace</label>
-                        <input class="form-field__value" value="<?= $resident['birthplace']; ?>" readonly>
+                        <input class="form-field__value" value="<?= $resident->getBirthplace() ?>" readonly>
                     </div>
                     <div class="form-field form-field--birthdate">
                         <label class="form-field__label">Birthdate</label>
-                        <input class="form-field__value" value="<?= $resident['birthdate']; ?>" readonly>
+                        <input class="form-field__value" value="<?= $resident->getBirthdate() ?>" readonly>
                     </div>
                     <div class="form-field form-field--religion">
                         <label class="form-field__label">Religion</label>
-                        <input class="form-field__value" value="<?= $resident['religion']; ?>" readonly>
+                        <input class="form-field__value" value="<?= $resident->getReligion() ?>" readonly>
                     </div>
                     <div class="form-field form-field--education">
                         <label class="form-field__label">Education Level</label>
-                        <input class="form-field__value" value="<?= $resident['education']; ?>" readonly>
+                        <input class="form-field__value" value="<?= $resident->getEducation() ?>" readonly>
                     </div>
                     <div class="form-field form-field--occupation">
                         <label class="form-field__label">Occupation</label>
-                        <input class="form-field__value" value="<?= $resident['occupation']; ?>" readonly>
+                        <input class="form-field__value" value="<?= $resident->getOccupation() ?>" readonly>
                     </div>
                     <div class="form-field form-field--family-role">
                         <label class="form-field__label">Family Role</label>
-                        <input class="form-field__value" value="<?= $resident['family_role']; ?>" readonly>
+                        <input class="form-field__value" value="<?= $resident->getFamilyRole() ?>" readonly>
                     </div>
                     <div class="form-field form-field--marital-status">
                         <label class="form-field__label">Marital Status</label>
-                        <input class="form-field__value" value="<?= $resident['marital_status']; ?>" readonly>
+                        <input class="form-field__value" value="<?= $resident->getMaritalStatus() ?>" readonly>
                     </div>
                     <div class="form-field form-field--created-at">
                         <label class="form-field__label">Created At</label>
-                        <input class="form-field__value" value="<?= $resident['created_at']; ?>" readonly>
+                        <input class="form-field__value" value="<?= $resident->getCreatedAt() ?>" readonly>
                     </div>
                     <div class="form-field form-field--updated-at">
                         <label class="form-field__label">Updated at</label>
-                        <input class="form-field__value" value="<?= $resident['updated_at']; ?>" readonly>
+                        <input class="form-field__value" value="<?= $resident->getUpdatedAt() ?>" readonly>
                     </div>
                 </div>
                 <div class="form__buttons">
-                    <a href="/residents/edit?id=<?= $resident['id']; ?>"
+                    <a href="/residents/edit?id=<?= $resident->getId() ?>"
                         class="form__button form__button--edit">Edit</a>
                     <form id="deleteForm" action="/residents/destroy" method="post">
-                        <input type="hidden" name="id" value="<?= $resident['id']; ?>">
-                        <button type="submit" class="form__button form__button--delete">Delete</button>
+                        <input type="hidden" name="id" value="<?= $resident->getId() ?>">
+                        <button type="submit" class="form__button form__button--delete" id="delete-btn">Delete</button>
                     </form>
                 </div>
             </div>
         </main>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <?php require __DIR__ . '/../components/alert.php' ?>
 
-    <?php require __DIR__ . '/../components/alerts/info.php' ?>
-    <?php require __DIR__ . '/../components/alerts/delete.php' ?>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/js/validations/residents/delete.js"></script>
+    <script src="/js/alert.js"></script>
 </body>
 
 </html>

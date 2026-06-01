@@ -6,9 +6,10 @@
 
 .sidebar {
     flex: 0.2;
-    height: 100vh;        
-    background-color: var(--secondary-color);
-    color: var(--text-in-dark);
+    height: 100vh;
+    background-color: var(--color-bg-secondary);
+    border-right: 1px solid var(--color-border-strong);
+    box-shadow: var(--color-primary-shadow);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -37,15 +38,16 @@
     height: 50px;
     gap: 10px;
     padding-left: 20px;
-    color: var(--text-in-dark);
     transition: all 0.2s ease;
 }
 
 .sidebar__link:hover {
-    background-color: var(--color-btn-default-hover);
+    background-color: var(--color-primary-hover);
+    color: var(--color-text-white);
 }
 
 .content {
     flex: 1;
     padding: 40px 60px;
+    background-color: var(--color-bg-primary);
 }

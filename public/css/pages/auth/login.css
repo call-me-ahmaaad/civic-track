@@ -3,12 +3,11 @@
     min-height: 100vh;
     display: flex;
     flex-direction: row;
-    background-color: var(--main-color);
+    background-color: var(--color-bg-primary);
 }
 
 .login__banner {
     flex: 1.5;
-    overflow: hidden;
 }
 
 .login__banner img {
@@ -36,7 +35,6 @@
 
 .login__header {
     gap: 10px;
-    padding: 10px 0;
 }
 
 .login__logo {
@@ -49,7 +47,6 @@
 }
 
 .login__inputs {
-    padding: 10px 0;
     gap: 20px;
 }
 
@@ -64,30 +61,37 @@
     padding: 0 10px;
     height: 35px;
     border-radius: 5px;
-    border: 1px solid var(--input-border);
+    background-color: var(--color-bg-surface);
+    border: 2px solid var(--color-border);
     transition: all 0.2s ease;
 }
 
 .form-field__value:focus {
-    border-color: var(--input-border-focus);
+    border-color: var(--color-primary-active);
+    box-shadow: 0 0 0 4px var(--color-primary-shadow);
 }
 
 .form-field__value::placeholder {
-    color: var(--placeholder-text);
+    color: var(--color-text-placeholder);
 }
 
-.form__button--submit {
-    width: 60%;
-    height: 40px;
+.form-field__status {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-danger-text);
+}
+
+.form__button--primary {
     margin-top: 10px;
-    background-color: var(--color-btn-default);
-    color: var(--main-color);
+    width: 60%;
+    height: 35px;
+    background-color: var(--color-primary);
+    color: var(--color-text-white);
     border-radius: 5px;
-    border: 1px solid var(--color-btn-default);
     transition: all 0.2s ease;
 }
 
-.form__button--submit:hover {
-    background-color: var(--color-btn-default-hover);
-    border-color: var(--color-btn-default-hover);
+.form__button--primary:hover {
+    background-color: var(--color-primary-hover);
+    box-shadow: 0 0 0 4px var(--color-primary-shadow);
 }

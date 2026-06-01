@@ -1,3 +1,5 @@
+<?php /** @var App\Models\Family[] $families */ ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -26,7 +28,8 @@
             <div class="content__table">
                 <h1 class="content-table__title">Families</h1>
                 <a class="content-table__button content-table__button--add" href="/families/create">
-                    <i class="fa-solid fa-plus"></i>
+                    <i class="content-table__button-logo fa-solid fa-plus"></i>
+                    <span class="content-table__button-text">Add Family</span>
                 </a>
                 <table id="familiesTable">
                     <thead>
@@ -38,21 +41,23 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <?php /** @var App\Models\Family $family */ ?>
                         <?php foreach ($families as $family): ?>
                             <tr>
                                 <td>
-                                    <a href="/families/detail?id=<?= $family['id'] ?>&familyCardNumber=<?= $family['family_card_number'] ?>">
-                                        <?= $family['family_card_number']; ?>
+                                    <a
+                                        href="/families/detail?id=<?= $family->getId() ?>&familyCardNumber=<?= $family->getFamilyCardNumber() ?>">
+                                        <?= $family->getFamilyCardNumber() ?>
                                     </a>
                                 </td>
                                 <td>
-                                    <?= $family['address']; ?>
+                                    <?= $family->getAddress() ?>
                                 </td>
                                 <td>
-                                    <?= $family['neighborhood_unit']; ?>
+                                    <?= $family->getNeighborhoodUnit() ?>
                                 </td>
                                 <td>
-                                    <?= $family['community_unit']; ?>
+                                    <?= $family->getCommunityUnit() ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -62,12 +67,13 @@
         </main>
     </div>
 
+    <?php require __DIR__ . '/../components/alert.php' ?>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/2.2.2/js/dataTables.min.js"></script>
-    <script src="/js/familiesTable.js"></script>
-
-    <?php require __DIR__ . '/../components/alerts/info.php' ?>
+    <script src="/js/tables/familiesTable.js"></script>
+    <script src="/js/alert.js"></script>
 </body>
 
 </html>

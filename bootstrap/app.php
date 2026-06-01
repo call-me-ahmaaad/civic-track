@@ -1,16 +1,24 @@
 <?php
 
-use App\Helpers\Database;
 use App\Controllers\{AuthController, DashboardController, FamilyController, ResidentController};
-use App\Repositories\{UserRepository, FamilyRepository, ResidentRepository, StatisticRepository, ReferenceRepository};
-use App\Services\AgeService;
+use App\Repositories\{FamilyRepository, ReferenceRepository, ResidentRepository, StatisticRepository, UserRepository};
+use App\Services\{DashboardService, FamilyService, ResidentService};
 use App\Services\Validators\{FamilyValidator, ResidentValidator};
 
-$config = require __DIR__ . '/../config/database.php';
-$db = new Database($config);
-$pdo = $db->connect();
+$userRepository = new UserRepository($pdo);
+$familyRepository = new FamilyRepository($pdo);
+$residentRepository = new ResidentRepository($pdo);
+$statisticRepository = new StatisticRepository($pdo);
+$referenceRepository = new ReferenceRepository($pdo);
 
-$auth = new AuthController(new UserRepository($pdo));
-$family = new FamilyController(new FamilyRepository($pdo), new FamilyValidator(), new ResidentRepository($pdo));
-$resident = new ResidentController(new ResidentRepository($pdo), new ResidentValidator(new ReferenceRepository($pdo)), new ReferenceRepository($pdo));
-$dashboard = new DashboardController(new StatisticRepository($pdo), new AgeService());
+$familyValidator = new FamilyValidator($familyRepository);
+$residentValidator = new ResidentValidator($referenceRepository, $residentRepository, $familyRepository);
+
+$familyService = new FamilyService($familyRepository, $residentRepository, $familyValidator);
+$residentService = new ResidentService($residentRepository, $residentValidator, $referenceRepository);
+$dashboardService = new DashboardService($statisticRepository);
+
+$auth = new AuthController($userRepository);
+$family = new FamilyController($familyService);
+$resident = new ResidentController($residentService);
+$dashboard = new DashboardController($dashboardService);

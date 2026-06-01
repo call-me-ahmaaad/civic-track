@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Exceptions\{DatabaseException, NotFoundException};
+use App\Models\Family;
 use PDO;
 use PDOException;
 
@@ -22,11 +23,22 @@ class FamilyRepository
 
             $stmt->execute();
 
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            return $result ?: [];
+            $families = array_map(function ($result) {
+                $family = new Family();
+                $family->setId($result['id']);
+                $family->setFamilyCardNumber($result['family_card_number']);
+                $family->setAddress($result['address']);
+                $family->setNeighborhoodUnit($result['neighborhood_unit']);
+                $family->setCommunityUnit($result['community_unit']);
+
+                return $family;
+            }, $results);
+
+            return $families ?: [];
         } catch (PDOException $error) {
-            throw new DatabaseException('Failed to fetch families data from database');
+            throw new DatabaseException('Failed to fetch family records from database.');
         }
     }
 
@@ -42,45 +54,89 @@ class FamilyRepository
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if (!$result) {
-                throw new NotFoundException('Family data not found');
+                throw new NotFoundException('Family record not found.');
             }
 
-            return $result;
+            $family = new Family();
+            $family->setId($result['id']);
+            $family->setFamilyCardNumber($result['family_card_number']);
+            $family->setAddress($result['address']);
+            $family->setNeighborhoodUnit($result['neighborhood_unit']);
+            $family->setCommunityUnit($result['community_unit']);
+            $family->setCreatedAt($result['created_at']);
+            $family->setUpdatedAt($result['updated_at']);
+
+            return $family;
         } catch (PDOException $error) {
-            throw new DatabaseException('Failed to fetch a family data from database');
+            throw new DatabaseException('Failed to fetch a family record from database.');
         }
     }
 
-    public function save(string $familyCardNumber, string $address, string $neighborhoodUnit, string $communityUnit)
+    public function isFamilyCardNumberTaken(string $familyCardNumber)
+    {
+        try {
+            $stmt = $this->pdo->prepare("SELECT family_card_number FROM families WHERE family_card_number = :family_card_number");
+
+            $stmt->execute([
+                ":family_card_number" => $familyCardNumber
+            ]);
+
+            return $stmt->fetchColumn() !== false;
+        } catch (PDOException $error) {
+            throw new DatabaseException('Failed to check a family card number from database.');
+        }
+    }
+
+    public function isFamilyCardNumberTakenByOther(string $familyCardNumber, int $excludeId)
+    {
+        try {
+            $stmt = $this->pdo->prepare("SELECT family_card_number FROM families WHERE family_card_number = :family_card_number AND id != :exclude_id");
+
+            $stmt->execute([
+                ":family_card_number" => $familyCardNumber,
+                ":exclude_id" => $excludeId
+            ]);
+
+            return $stmt->fetchColumn() !== false;
+        } catch (PDOException $error) {
+            throw new DatabaseException('Failed to check a family card number from database.');
+        }
+    }
+
+    public function save(Family $family)
     {
         try {
             $stmt = $this->pdo->prepare("INSERT INTO families(family_card_number, address, neighborhood_unit, community_unit) VALUES (:family_card_number, :address, :neighborhood_unit, :community_unit)");
 
             $stmt->execute([
-                ":family_card_number" => $familyCardNumber,
-                ":address" => $address,
-                ":neighborhood_unit" => $neighborhoodUnit,
-                ":community_unit" => $communityUnit
+                ":family_card_number" => $family->getFamilyCardNumber(),
+                ":address" => $family->getAddress(),
+                ":neighborhood_unit" => $family->getNeighborhoodUnit(),
+                ":community_unit" => $family->getCommunityUnit()
             ]);
         } catch (PDOException $error) {
-            throw new DatabaseException('Failed to insert a family data to database');
+            throw new DatabaseException('Failed to insert a family record to database.');
         }
     }
 
-    public function update(int $id, string $familyCardNumber, string $address, string $neighborhoodUnit, string $communityUnit)
+    public function update(Family $family)
     {
         try {
             $stmt = $this->pdo->prepare("UPDATE families SET family_card_number = :family_card_number, address = :address, neighborhood_unit = :neighborhood_unit, community_unit = :community_unit WHERE id = :id");
 
             $stmt->execute([
-                ":family_card_number" => $familyCardNumber,
-                ":address" => $address,
-                ":neighborhood_unit" => $neighborhoodUnit,
-                ":community_unit" => $communityUnit,
-                ":id" => $id
+                ":family_card_number" => $family->getFamilyCardNumber(),
+                ":address" => $family->getAddress(),
+                ":neighborhood_unit" => $family->getNeighborhoodUnit(),
+                ":community_unit" => $family->getCommunityUnit(),
+                ":id" => $family->getId()
             ]);
+
+            if ($stmt->rowCount() === 0) {
+                throw new NotFoundException("Family record not found.");
+            }
         } catch (PDOException $error) {
-            throw new DatabaseException('Failed to update a family data to database');
+            throw new DatabaseException('Failed to update a family record to database.');
         }
     }
 
@@ -92,8 +148,12 @@ class FamilyRepository
             $stmt->execute([
                 ":id" => $id,
             ]);
+
+            if ($stmt->rowCount() === 0) {
+                throw new NotFoundException("Family record not found.");
+            }
         } catch (PDOException $error) {
-            throw new DatabaseException('Failed to delete a family data from database');
+            throw new DatabaseException('Failed to delete a family record from database.');
         }
     }
 }

@@ -20,7 +20,7 @@ class ReferenceRepository
     public function exists(string $table, int $id)
     {
         if (!in_array($table, $this->referenceTable)) {
-            throw new InvalidArgumentException('Table is not allowed');
+            throw new InvalidArgumentException('Table is not allowed.');
         }
 
         try {
@@ -32,7 +32,7 @@ class ReferenceRepository
 
             return $stmt->fetchColumn() > 0;
         } catch (PDOException $error) {
-            throw new DatabaseException("Failed to count row from {$table}");
+            throw new DatabaseException("Failed to check option/id from {$table}.");
         }
     }
 
@@ -45,7 +45,7 @@ class ReferenceRepository
 
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $error) {
-            throw new DatabaseException('Failed to fetch cities data from database');
+            throw new DatabaseException('Failed to fetch cities from database.');
         }
     }
 
@@ -58,7 +58,7 @@ class ReferenceRepository
 
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $error) {
-            throw new DatabaseException('Failed to fetch religions data from database');
+            throw new DatabaseException('Failed to fetch religions from database.');
         }
     }
 
@@ -71,7 +71,7 @@ class ReferenceRepository
 
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $error) {
-            throw new DatabaseException('Failed to fetch educations data from database');
+            throw new DatabaseException('Failed to fetch educations from database.');
         }
     }
 
@@ -84,7 +84,7 @@ class ReferenceRepository
 
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $error) {
-            throw new DatabaseException('Failed to fetch occupations data from database');
+            throw new DatabaseException('Failed to fetch occupations from database.');
         }
     }
 
@@ -97,7 +97,7 @@ class ReferenceRepository
 
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $error) {
-            throw new DatabaseException('Failed to fetch family roles data from database');
+            throw new DatabaseException('Failed to fetch family roles from database.');
         }
     }
 }

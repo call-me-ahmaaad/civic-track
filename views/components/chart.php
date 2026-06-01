@@ -2,17 +2,11 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 
 <script>
-    const gender = <?= json_encode($totalEachGender) ?>;
-    const age = <?= json_encode($totalEachAge) ?>;
-    const religion = <?= json_encode($totalEachReligion) ?>;
-    const occupation = <?= json_encode($totalEachOccupation) ?>;
-    const education = <?= json_encode($totalEachEducationLevel) ?>;
-
-    console.log(gender);
-    console.log(age);
-    console.log(religion);
-    console.log(occupation);
-    console.log(education);
+    const gender = <?= json_encode($data['total_each_gender']) ?>;
+    const age = <?= json_encode($data['total_each_age']) ?>;
+    const religion = <?= json_encode($data['total_each_religion']) ?>;
+    const occupation = <?= json_encode($data['total_each_occupation']) ?>;
+    const education = <?= json_encode($data['total_each_education']) ?>;
 
     Chart.register(ChartDataLabels);
 

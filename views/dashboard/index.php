@@ -26,14 +26,14 @@
                     <div class="summary-item">
                         <h2 class="summary-item__title">Family</h2>
                         <span class="summary-item__value" id="total-family">
-                            <?= $totalFamily ?>
+                            <?= $data['total_family'] ?>
                         </span>
                     </div>
 
                     <div class="summary-item">
                         <h2 class="summary-item__title">Resident</h2>
                         <span class="summary-item__value" id="total-resident">
-                            <?= $totalResident ?>
+                            <?= $data['total_resident'] ?>
                         </span>
                     </div>
                 </div>
@@ -76,10 +76,11 @@
         </main>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <?php require __DIR__ . '/../components/chart.php' ?>
-    <?php require __DIR__ . '/../components/alerts/info.php' ?>
+    <?php require __DIR__ . '/../components/alert.php' ?>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/js/alert.js"></script>
 </body>
 
 </html>

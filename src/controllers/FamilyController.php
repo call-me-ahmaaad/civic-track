@@ -3,20 +3,15 @@
 namespace App\Controllers;
 
 use App\Exceptions\{NotFoundException, DatabaseException, ValidationException};
-use App\Repositories\{FamilyRepository, ResidentRepository};
-use App\Services\Validators\FamilyValidator;
+use App\Services\FamilyService;
 
 class FamilyController
 {
-    private FamilyRepository $familyRepository;
-    private FamilyValidator $familyValidator;
-    private ResidentRepository $residentRepository;
+    private FamilyService $familyService;
 
-    public function __construct(FamilyRepository $familyRepository, FamilyValidator $familyValidator, ResidentRepository $residentRepository)
+    public function __construct(FamilyService $familyService)
     {
-        $this->familyRepository = $familyRepository;
-        $this->familyValidator = $familyValidator;
-        $this->residentRepository = $residentRepository;
+        $this->familyService = $familyService;
     }
 
     public function index()
@@ -27,7 +22,7 @@ class FamilyController
         }
 
         try {
-            $families = $this->familyRepository->findAll();
+            $families = $this->familyService->getAllFamilies();
 
             require __DIR__ . '/../../views/families/index.php';
         } catch (DatabaseException $error) {
@@ -55,27 +50,39 @@ class FamilyController
             exit();
         }
 
-        $familyCardNumber = $_POST['familyCardNumber'];
-        $address = $_POST['address'];
-        $neighborhoodUnit = $_POST['neighborhoodUnit'];
-        $communityUnit = $_POST['communityUnit'];
+        $family = [
+            "family_card_number" => trim($_POST['familyCardNumber']),
+            "address" => trim($_POST['address']),
+            "neighborhood_unit" => trim($_POST['neighborhoodUnit']),
+            "community_unit" => trim($_POST['communityUnit'])
+        ];
 
         try {
-            $this->familyValidator->validation($familyCardNumber, $address, $neighborhoodUnit, $communityUnit);
+            $this->familyService->createFamily($family);
 
-            $this->familyRepository->save($familyCardNumber, $address, $neighborhoodUnit, $communityUnit);
-
-            $_SESSION['success'] = "Successfully inserted a new family. Family: {$familyCardNumber}";
+            $_SESSION['alert'] = [
+                'icon' => 'success',
+                'title' => 'Family Record Created',
+                'text' => 'The family record has been created succesfully.'
+            ];
 
             header('Location: /families');
             exit();
         } catch (DatabaseException $error) {
-            $_SESSION['error'] = $error->getMessage();
+            $_SESSION['alert'] = [
+                'icon' => 'error',
+                'title' => 'Failed to Create Family Record',
+                'text' => 'Unable to create the family record. Please try again.'
+            ];
 
             header('Location: /families');
             exit();
         } catch (ValidationException $error) {
-            $_SESSION['error'] = $error->getMessage();
+            $_SESSION['alert'] = [
+                'icon' => 'error',
+                'title' => 'Failed to Create Family Record',
+                'text' => $error->getMessage()
+            ];
 
             header('Location: /families/create');
             exit();
@@ -89,21 +96,29 @@ class FamilyController
             exit();
         }
 
-        $id = $_GET['id'];
-        $familyCardNumber = $_GET['familyCardNumber'];
+        $id = (int) $_GET['id'];
+        $familyCardNumber = trim($_GET['familyCardNumber']);
 
         try {
-            $family = $this->familyRepository->findById($id);
-            $residents = $this->residentRepository->findByFamilyCardNumber($familyCardNumber);
+            $family = $this->familyService->getFamilyById($id);
+            $residents = $this->familyService->getResidentsByFamilyCardNumber($familyCardNumber);
 
             require __DIR__ . '/../../views/families/detail.php';
         } catch (NotFoundException $error) {
-            $_SESSION['error'] = $error->getMessage();
+            $_SESSION['alert'] = [
+                'icon' => 'error',
+                'title' => 'Family Record Not Found',
+                'text' => $error->getMessage()
+            ];
 
             header('Location: /families');
             exit();
         } catch (DatabaseException $error) {
-            $_SESSION['error'] = $error->getMessage();
+            $_SESSION['alert'] = [
+                'icon' => 'error',
+                'title' => 'Failed to Load Family Record',
+                'text' => 'Unable to load the family record. Please try again.'
+            ];
 
             header('Location: /families');
             exit();
@@ -117,14 +132,27 @@ class FamilyController
             exit();
         }
 
-        $id = $_GET['id'];
+        $id = (int) $_GET['id'];
 
         try {
-            $family = $this->familyRepository->findById($id);
+            $family = $this->familyService->getFamilyById($id);
 
             require __DIR__ . '/../../views/families/edit.php';
-        } catch (NotFoundException | DatabaseException $error) {
-            $_SESSION['error'] = $error->getMessage();
+        } catch (NotFoundException $error) {
+            $_SESSION['alert'] = [
+                'icon' => 'error',
+                'title' => 'Family Record Not Found',
+                'text' => $error->getMessage()
+            ];
+
+            header('Location: /families');
+            exit();
+        } catch (DatabaseException $error) {
+            $_SESSION['alert'] = [
+                'icon' => 'error',
+                'title' => 'Failed to Load Family Record',
+                'text' => 'Unable to load the family record. Please try again.'
+            ];
 
             header('Location: /families');
             exit();
@@ -138,30 +166,42 @@ class FamilyController
             exit();
         }
 
-        $id = $_POST['id'];
-        $familyCardNumber = $_POST['familyCardNumber'];
-        $address = $_POST['address'];
-        $neighborhoodUnit = $_POST['neighborhoodUnit'];
-        $communityUnit = $_POST['communityUnit'];
+        $family = [
+            "id" => (int) $_POST['id'],
+            "family_card_number" => trim($_POST['familyCardNumber']),
+            "address" => trim($_POST['address']),
+            "neighborhood_unit" => trim($_POST['neighborhoodUnit']),
+            "community_unit" => trim($_POST['communityUnit'])
+        ];
 
         try {
-            $this->familyValidator->validation($familyCardNumber, $address, $neighborhoodUnit, $communityUnit);
+            $this->familyService->updateFamily($family);
 
-            $this->familyRepository->update($id, $familyCardNumber, $address, $neighborhoodUnit, $communityUnit);
-
-            $_SESSION['success'] = "Successfully updated a family data.";
+            $_SESSION['alert'] = [
+                'icon' => 'success',
+                'title' => 'Family Record Updated',
+                'text' => 'The family record has been updated successfully'
+            ];
 
             header('Location: /families');
             exit();
         } catch (DatabaseException $error) {
-            $_SESSION['error'] = $error->getMessage();
+            $_SESSION['alert'] = [
+                'icon' => 'error',
+                'title' => 'Failed to Update Family Record',
+                'text' => 'Unable to update the family record. Please try again.'
+            ];
 
             header('Location: /families');
             exit();
         } catch (ValidationException $error) {
-            $_SESSION['error'] = $error->getMessage();
+            $_SESSION['alert'] = [
+                'icon' => 'error',
+                'title' => 'Failed to Update Family Record',
+                'text' => $error->getMessage()
+            ];
 
-            header('Location: /families/edit?id=' . $id);
+            header('Location: /families/edit?id=' . $family['id']);
             exit();
         }
     }
@@ -173,17 +213,34 @@ class FamilyController
             exit();
         }
 
-        $id = $_POST['id'];
+        $id = (int) $_POST['id'];
 
         try {
-            $this->familyRepository->delete($id);
+            $this->familyService->deleteFamily($id);
 
-            $_SESSION['success'] = "Successfully deleted a family data";
+            $_SESSION['alert'] = [
+                'icon' => 'success',
+                'title' => 'Family Record Deleted',
+                'text' => 'The family record has been deleted successfully.'
+            ];
 
             header('Location: /families');
             exit();
         } catch (DatabaseException $error) {
-            $_SESSION['error'] = $error->getMessage();
+            $_SESSION['alert'] = [
+                'icon' => 'error',
+                'title' => 'Failed to Delete Family Record',
+                'text' => 'Unable to delete the family record. Please try again.'
+            ];
+
+            header('Location: /families');
+            exit();
+        } catch (ValidationException $error) {
+            $_SESSION['alert'] = [
+                'icon' => 'error',
+                'title' => 'Failed to Delete Family Record',
+                'text' => $error->getMessage()
+            ];
 
             header('Location: /families');
             exit();

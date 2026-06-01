@@ -2,19 +2,16 @@
 
 namespace App\Controllers;
 
-use App\Repositories\StatisticRepository;
-use App\Services\AgeService;
+use App\Services\DashboardService;
 use App\Exceptions\DatabaseException;
 
 class DashboardController
 {
-    private StatisticRepository $statisticRepository;
-    private AgeService $ageService;
+    private DashboardService $dashboardService;
 
-    public function __construct(StatisticRepository $statisticRepository, AgeService $ageService)
+    public function __construct(DashboardService $dashboardService)
     {
-        $this->statisticRepository = $statisticRepository;
-        $this->ageService = $ageService;
+        $this->dashboardService = $dashboardService;
     }
 
     public function index()
@@ -25,15 +22,7 @@ class DashboardController
         }
 
         try {
-            $totalFamily = $this->statisticRepository->getTotalFamily();
-            $totalResident = $this->statisticRepository->getTotalResident();
-            $totalEachGender = $this->statisticRepository->getTotalEachGender();
-            $totalEachReligion = $this->statisticRepository->getTotalEachReligion();
-            $totalEachOccupation = $this->statisticRepository->getTotalEachOccupation();
-            $totalEachEducationLevel = $this->statisticRepository->getTotalEachEducation();
-
-            $birthdates = $this->statisticRepository->getBirthdate();
-            $totalEachAge = $this->ageService->getTotalEachAge($birthdates);
+            $data = $this->dashboardService->getDashboardData();
 
             require __DIR__ . '/../../views/dashboard/index.php';
         } catch (DatabaseException $error) {

@@ -25,7 +25,7 @@ class AuthController
         $password = $_POST['password'];
 
         try {
-            if(empty($username) || empty($password)){
+            if (empty($username) || empty($password)) {
                 throw new AuthException("Username or password cannot be empty");
             }
 
@@ -36,7 +36,11 @@ class AuthController
             if ($status) {
                 $_SESSION['user'] = $user['username'];
 
-                $_SESSION['success'] = "Successfully login to the system. Welcome, officer!";
+                $_SESSION['alert'] = [
+                    'icon' => 'success',
+                    'title' => 'Login Successful',
+                    'text' => 'Welcome back. You have successfully signed in.'
+                ];
 
                 header('Location: /');
                 exit();
@@ -44,7 +48,11 @@ class AuthController
                 throw new AuthException("Invalid password");
             }
         } catch (AuthException | NotFoundException $error) {
-            $_SESSION['error'] = $error->getMessage();
+            $_SESSION['alert'] = [
+                'icon' => 'error',
+                'title' => 'Login Failed',
+                'text' => 'Invalid username or password.'
+            ];
 
             header('Location: /login');
             exit();

@@ -1,3 +1,5 @@
+<?php /** @var App\Models\Resident[] $residents */ ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -26,7 +28,8 @@
             <div class="content__table">
                 <h1 class="content-table__title">Residents</h1>
                 <a class="content-table__button content-table__button--add" href="/residents/create">
-                    <i class="fa-solid fa-plus"></i>
+                    <i class="content-table__button-logo fa-solid fa-plus"></i>
+                    <span class="content-table__button-text">Add Resident</span>
                 </a>
                 <table id="residentsTable">
                     <thead>
@@ -39,26 +42,27 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <?php /** @var App\Models\Resident $resident */ ?>
                         <?php foreach ($residents as $resident): ?>
                             <tr>
                                 <td>
-                                    <a href="/residents/detail?id=<?= $resident['resident_id']; ?>">
-                                        <?= $resident['identity_number']; ?>
+                                    <a href="/residents/detail?id=<?= $resident->getId() ?>">
+                                        <?= $resident->getIdentityNumber() ?>
                                     </a>
                                 </td>
                                 <td>
-                                    <a href="/families/detail?id=<?= $resident['family_id']; ?>">
-                                        <?= $resident['family_card_number']; ?>
+                                    <a href="/families/detail?id=<?= $resident->getFamilyId() ?>">
+                                        <?= $resident->getFamilyCardNumber() ?>
                                     </a>
                                 </td>
                                 <td>
-                                    <?= $resident['fullname']; ?>
+                                    <?= $resident->getFullname() ?>
                                 </td>
                                 <td>
-                                    <?= $resident['gender']; ?>
+                                    <?= $resident->getGender() ?>
                                 </td>
                                 <td>
-                                    <?= $resident['birthdate']; ?>
+                                    <?= $resident->getBirthdate() ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -68,12 +72,13 @@
         </main>
     </div>
 
+    <?php require __DIR__ . '/../components/alert.php' ?>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/2.2.2/js/dataTables.min.js"></script>
-    <script src="/js/residentsTable.js"></script>
-
-    <?php require __DIR__ . '/../components/alerts/info.php' ?>
+    <script src="/js/tables/residentsTable.js"></script>
+    <script src="/js/alert.js"></script>
 </body>
 
 </html>
