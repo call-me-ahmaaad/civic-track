@@ -3,7 +3,7 @@
 ---
 A straightforward resident data management system built for village-level administration.
 
-![Static Badge](https://img.shields.io/badge/STATUS-In--progress-%23E16B16?style=for-the-badge)
+![Static Badge](https://img.shields.io/badge/status-completed-green?style=for-the-badge)
 ![Static Badge](https://img.shields.io/badge/LICENSE-MIT-blue?style=for-the-badge)
 
 ## 📌 What is this?
@@ -69,6 +69,24 @@ Still the same CivicTrack, just built with a little more experience than before.
 ![Static Badge](https://img.shields.io/badge/JavaScript-%23F7E025?style=for-the-badge&logo=javascript&logoColor=black)
 ![Static Badge](https://img.shields.io/badge/PHP-%23787CB4?style=for-the-badge&logo=php&logoColor=white)
 ![Static Badge](https://img.shields.io/badge/MySQL-%23086590?style=for-the-badge&logo=mysql&logoColor=white)
+
+---
+
+## 🎬 Preview
+
+> A full demo system of CivicTrack.
+
+[![YouTube](https://img.shields.io/badge/YouTube-Pre--Update-red?style=for-the-badge&logo=youtube)](https://youtu.be/VVNFoWfYyO4)
+[![YouTube](https://img.shields.io/badge/YouTube-Post--Update-red?style=for-the-badge&logo=youtube)](https://youtu.be/9u5aEMrsX00)
+
+### Screenshot
+
+<img width="1919" alt="Screenshot 2026-06-02 160823" src="https://github.com/user-attachments/assets/e6539af5-4f95-4169-bf7b-67d06e389f1c" />
+<img width="1919" alt="Screenshot 2026-06-02 160844" src="https://github.com/user-attachments/assets/377c1aa3-dc37-4a69-9582-52c7911ef0d6" />
+<img width="1919" alt="Screenshot 2026-06-02 160853" src="https://github.com/user-attachments/assets/1f4fd6fe-db0e-4e69-92e7-b5ee340ac33e" />
+<img width="1919" alt="Screenshot 2026-06-02 160848" src="https://github.com/user-attachments/assets/bd9336e5-9ddf-451d-a0e9-3b584d99b9d7" />
+
+> *Sorry for the video quality 🙏*
 
 ---
 
