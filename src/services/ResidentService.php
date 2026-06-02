@@ -44,6 +44,7 @@ class ResidentService
     public function createResident(array $data): void
     {
         $this->residentValidator->validateUniqueIdentityNumber($data['identity_number']);
+        $this->residentValidator->validateRegisteredFamilyCardNumber($data['family_card_number']);
 
         $resident = new Resident();
         $resident->setIdentityNumber($data['identity_number']);

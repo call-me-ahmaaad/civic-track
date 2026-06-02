@@ -7,7 +7,7 @@ const familyCardNumberStatus = document.getElementById("familyCardNumber-status"
 const fullname = document.getElementById("fullname");
 const fullnameStatus = document.getElementById("fullname-status");
 
-[identityNumberNumber, familyCardNumber, fullname].forEach(field => {
+[identityNumber, familyCardNumber, fullname].forEach(field => {
     field.addEventListener('input', () => {
         document.getElementById(`${field.id}-status`).textContent = '';
     });
