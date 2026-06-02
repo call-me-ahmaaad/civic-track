@@ -14,7 +14,7 @@ class DashboardController
         $this->dashboardService = $dashboardService;
     }
 
-    public function index()
+    public function index(): void
     {
         if (!isset($_SESSION['user'])) {
             header('Location: /login');

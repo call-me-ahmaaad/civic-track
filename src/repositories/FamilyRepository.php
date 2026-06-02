@@ -16,7 +16,7 @@ class FamilyRepository
         $this->pdo = $pdo;
     }
 
-    public function findAll()
+    public function findAll(): array
     {
         try {
             $stmt = $this->pdo->prepare("SELECT id, family_card_number, address, neighborhood_unit, community_unit FROM families");
@@ -42,7 +42,7 @@ class FamilyRepository
         }
     }
 
-    public function findById(int $id)
+    public function findById(int $id): Family
     {
         try {
             $stmt = $this->pdo->prepare("SELECT id, family_card_number, address, neighborhood_unit, community_unit, created_at, updated_at FROM families WHERE id = :id");
@@ -72,38 +72,53 @@ class FamilyRepository
         }
     }
 
-    public function isFamilyCardNumberTaken(string $familyCardNumber)
+    public function isIdExist(int $id): bool
     {
         try {
-            $stmt = $this->pdo->prepare("SELECT family_card_number FROM families WHERE family_card_number = :family_card_number");
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM families WHERE id = :id");
+
+            $stmt->execute([
+                ":id" => $id
+            ]);
+
+            return $stmt->fetchColumn() > 0;
+        } catch (PDOException $error) {
+            throw new DatabaseException('Failed to check if ID exist or not in database.');
+        }
+    }
+
+    public function isFamilyCardNumberTaken(string $familyCardNumber): bool
+    {
+        try {
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM families WHERE family_card_number = :family_card_number");
 
             $stmt->execute([
                 ":family_card_number" => $familyCardNumber
             ]);
 
-            return $stmt->fetchColumn() !== false;
+            return $stmt->fetchColumn() > 0;
         } catch (PDOException $error) {
             throw new DatabaseException('Failed to check a family card number from database.');
         }
     }
 
-    public function isFamilyCardNumberTakenByOther(string $familyCardNumber, int $excludeId)
+    public function isFamilyCardNumberTakenByOther(string $familyCardNumber, int $excludeId): bool
     {
         try {
-            $stmt = $this->pdo->prepare("SELECT family_card_number FROM families WHERE family_card_number = :family_card_number AND id != :exclude_id");
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM families WHERE family_card_number = :family_card_number AND id != :exclude_id");
 
             $stmt->execute([
                 ":family_card_number" => $familyCardNumber,
                 ":exclude_id" => $excludeId
             ]);
 
-            return $stmt->fetchColumn() !== false;
+            return $stmt->fetchColumn() > 0;
         } catch (PDOException $error) {
             throw new DatabaseException('Failed to check a family card number from database.');
         }
     }
 
-    public function save(Family $family)
+    public function save(Family $family): void
     {
         try {
             $stmt = $this->pdo->prepare("INSERT INTO families(family_card_number, address, neighborhood_unit, community_unit) VALUES (:family_card_number, :address, :neighborhood_unit, :community_unit)");
@@ -119,7 +134,7 @@ class FamilyRepository
         }
     }
 
-    public function update(Family $family)
+    public function update(Family $family): void
     {
         try {
             $stmt = $this->pdo->prepare("UPDATE families SET family_card_number = :family_card_number, address = :address, neighborhood_unit = :neighborhood_unit, community_unit = :community_unit WHERE id = :id");
@@ -131,16 +146,12 @@ class FamilyRepository
                 ":community_unit" => $family->getCommunityUnit(),
                 ":id" => $family->getId()
             ]);
-
-            if ($stmt->rowCount() === 0) {
-                throw new NotFoundException("Family record not found.");
-            }
         } catch (PDOException $error) {
             throw new DatabaseException('Failed to update a family record to database.');
         }
     }
 
-    public function delete(int $id)
+    public function delete(int $id): void
     {
         try {
             $stmt = $this->pdo->prepare("DELETE FROM families WHERE id = :id");
@@ -148,10 +159,6 @@ class FamilyRepository
             $stmt->execute([
                 ":id" => $id,
             ]);
-
-            if ($stmt->rowCount() === 0) {
-                throw new NotFoundException("Family record not found.");
-            }
         } catch (PDOException $error) {
             throw new DatabaseException('Failed to delete a family record from database.');
         }

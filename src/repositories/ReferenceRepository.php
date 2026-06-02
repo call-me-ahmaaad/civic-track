@@ -17,7 +17,7 @@ class ReferenceRepository
         $this->pdo = $pdo;
     }
 
-    public function exists(string $table, int $id)
+    public function exists(string $table, int $id): bool
     {
         if (!in_array($table, $this->referenceTable)) {
             throw new InvalidArgumentException('Table is not allowed.');
@@ -36,7 +36,7 @@ class ReferenceRepository
         }
     }
 
-    public function getCities()
+    public function getCities(): array
     {
         try {
             $stmt = $this->pdo->prepare("SELECT id, city FROM cities");
@@ -49,7 +49,7 @@ class ReferenceRepository
         }
     }
 
-    public function getReligions()
+    public function getReligions(): array
     {
         try {
             $stmt = $this->pdo->prepare("SELECT id, religion FROM religions");
@@ -62,7 +62,7 @@ class ReferenceRepository
         }
     }
 
-    public function getEducations()
+    public function getEducations(): array
     {
         try {
             $stmt = $this->pdo->prepare("SELECT id, education FROM educations");
@@ -75,7 +75,7 @@ class ReferenceRepository
         }
     }
 
-    public function getOccupations()
+    public function getOccupations(): array
     {
         try {
             $stmt = $this->pdo->prepare("SELECT id, occupation FROM occupations");
@@ -88,7 +88,7 @@ class ReferenceRepository
         }
     }
 
-    public function getFamilyRoles()
+    public function getFamilyRoles(): array
     {
         try {
             $stmt = $this->pdo->prepare("SELECT id, role FROM family_roles");

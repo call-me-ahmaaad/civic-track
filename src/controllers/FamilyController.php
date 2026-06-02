@@ -14,7 +14,7 @@ class FamilyController
         $this->familyService = $familyService;
     }
 
-    public function index()
+    public function index(): void
     {
         if (!isset($_SESSION['user'])) {
             header('Location: /login');
@@ -33,7 +33,7 @@ class FamilyController
         }
     }
 
-    public function create()
+    public function create(): void
     {
         if (!isset($_SESSION['user'])) {
             header('Location: /login');
@@ -43,7 +43,7 @@ class FamilyController
         require __DIR__ . '/../../views/families/create.php';
     }
 
-    public function store()
+    public function store(): void
     {
         if (!isset($_SESSION['user'])) {
             header('Location: /login');
@@ -89,7 +89,7 @@ class FamilyController
         }
     }
 
-    public function detail()
+    public function detail(): void
     {
         if (!isset($_SESSION['user'])) {
             header('Location: /login');
@@ -125,7 +125,7 @@ class FamilyController
         }
     }
 
-    public function edit()
+    public function edit(): void
     {
         if (!isset($_SESSION['user'])) {
             header('Location: /login');
@@ -159,7 +159,7 @@ class FamilyController
         }
     }
 
-    public function update()
+    public function update(): void
     {
         if (!isset($_SESSION['user'])) {
             header('Location: /login');
@@ -180,7 +180,7 @@ class FamilyController
             $_SESSION['alert'] = [
                 'icon' => 'success',
                 'title' => 'Family Record Updated',
-                'text' => 'The family record has been updated successfully'
+                'text' => 'The family record has been updated successfully.'
             ];
 
             header('Location: /families');
@@ -194,7 +194,7 @@ class FamilyController
 
             header('Location: /families');
             exit();
-        } catch (ValidationException $error) {
+        } catch (ValidationException | NotFoundException $error) {
             $_SESSION['alert'] = [
                 'icon' => 'error',
                 'title' => 'Failed to Update Family Record',
@@ -206,7 +206,7 @@ class FamilyController
         }
     }
 
-    public function destroy()
+    public function destroy(): void
     {
         if (!isset($_SESSION['user'])) {
             header('Location: /login');
@@ -235,7 +235,7 @@ class FamilyController
 
             header('Location: /families');
             exit();
-        } catch (ValidationException $error) {
+        } catch (ValidationException | NotFoundException $error) {
             $_SESSION['alert'] = [
                 'icon' => 'error',
                 'title' => 'Failed to Delete Family Record',

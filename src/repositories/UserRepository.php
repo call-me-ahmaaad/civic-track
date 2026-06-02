@@ -15,7 +15,7 @@ class UserRepository
         $this->pdo = $pdo;
     }
 
-    public function findByUsername(string $username)
+    public function findByUsername(string $username): array
     {
         try {
             $stmt = $this->pdo->prepare("SELECT username, password FROM users WHERE username = :username");

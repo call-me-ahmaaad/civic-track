@@ -2,10 +2,9 @@
 
 namespace App\Services;
 
-use App\Exceptions\ValidationException;
 use App\Models\Resident;
-use App\Repositories\ReferenceRepository;
-use App\Repositories\ResidentRepository;
+use App\Exceptions\{ValidationException, NotFoundException};
+use App\Repositories\{ReferenceRepository, ResidentRepository};
 use App\Services\Validators\ResidentValidator;
 
 class ResidentService
@@ -21,17 +20,17 @@ class ResidentService
         $this->referenceRepository = $referenceRepository;
     }
 
-    public function getAllResidents()
+    public function getAllResidents(): array
     {
         return $this->residentRepository->findAll();
     }
 
-    public function getResidentById(int $id)
+    public function getResidentById(int $id): Resident
     {
         return $this->residentRepository->findById($id);
     }
 
-    public function getDropdownValues()
+    public function getDropdownValues(): array
     {
         return [
             "cities" => $this->referenceRepository->getCities(),
@@ -42,7 +41,7 @@ class ResidentService
         ];
     }
 
-    public function createResident(array $data)
+    public function createResident(array $data): void
     {
         $this->residentValidator->validateUniqueIdentityNumber($data['identity_number']);
 
@@ -62,10 +61,14 @@ class ResidentService
         $this->residentRepository->save($resident);
     }
 
-    public function updateResident(array $data)
+    public function updateResident(array $data): void
     {
         if ($data['id'] <= 0) {
             throw new ValidationException("Invalid resident ID.");
+        }
+
+        if (!$this->residentRepository->isIdExist($data['id'])) {
+            throw new NotFoundException("Resident record not found.");
         }
 
         $this->residentValidator->validateUniqueUpdateIdentityNumber($data['identity_number'], $data['id']);
@@ -87,10 +90,14 @@ class ResidentService
         $this->residentRepository->update($resident);
     }
 
-    public function deleteResident(int $id)
+    public function deleteResident(int $id): void
     {
         if ($id <= 0) {
             throw new ValidationException("Invalid resident ID.");
+        }
+
+        if (!$this->residentRepository->isIdExist($id)) {
+            throw new NotFoundException("Resident record not found.");
         }
 
         $this->residentRepository->delete($id);

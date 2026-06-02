@@ -15,10 +15,10 @@ class StatisticRepository
         $this->pdo = $pdo;
     }
 
-    public function getTotalFamily()
+    public function getTotalFamily(): int
     {
         try {
-            $stmt = $this->pdo->prepare("SELECT COUNT(id) AS total_family FROM families");
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) AS total_family FROM families");
 
             $stmt->execute();
 
@@ -30,10 +30,10 @@ class StatisticRepository
         }
     }
 
-    public function getTotalResident()
+    public function getTotalResident(): int
     {
         try {
-            $stmt = $this->pdo->prepare("SELECT COUNT(id) AS total_resident FROM residents");
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) AS total_resident FROM residents");
 
             $stmt->execute();
 
@@ -45,7 +45,7 @@ class StatisticRepository
         }
     }
 
-    public function getTotalEachGender()
+    public function getTotalEachGender(): array
     {
         try {
             $stmt = $this->pdo->prepare(
@@ -64,7 +64,7 @@ class StatisticRepository
         }
     }
 
-    public function getTotalEachReligion()
+    public function getTotalEachReligion(): array
     {
         try {
             $stmt = $this->pdo->prepare(
@@ -85,7 +85,7 @@ class StatisticRepository
         }
     }
 
-    public function getTotalEachOccupation()
+    public function getTotalEachOccupation(): array
     {
         try {
             $stmt = $this->pdo->prepare(
@@ -108,7 +108,7 @@ class StatisticRepository
         }
     }
 
-    public function getTotalEachEducation()
+    public function getTotalEachEducation(): array
     {
         try {
             $stmt = $this->pdo->prepare(
@@ -129,7 +129,7 @@ class StatisticRepository
         }
     }
 
-    public function getBirthdates()
+    public function getBirthdates(): array
     {
         try {
             $stmt = $this->pdo->prepare(

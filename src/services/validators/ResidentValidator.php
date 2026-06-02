@@ -20,56 +20,56 @@ class ResidentValidator
         $this->familyRepository = $familyRepository;
     }
 
-    public function validateUniqueIdentityNumber(string $identityNumber)
+    public function validateUniqueIdentityNumber(string $identityNumber): void
     {
         if ($this->residentRepository->isIdentityNumberTaken($identityNumber)) {
             throw new ValidationException("Identity Number is already in use.");
         }
     }
 
-    public function validateUniqueUpdateIdentityNumber(string $identityNumber, int $excludeId)
+    public function validateUniqueUpdateIdentityNumber(string $identityNumber, int $excludeId): void
     {
         if ($this->residentRepository->isIdentityNumberTakenByOther($identityNumber, $excludeId)) {
             throw new ValidationException("Identity Number is already in use.");
         }
     }
 
-    public function validateRegisteredFamilyCardNumber(string $familyCardNumber)
+    public function validateRegisteredFamilyCardNumber(string $familyCardNumber): void
     {
         if (!$this->familyRepository->isFamilyCardNumberTaken($familyCardNumber)) {
             throw new ValidationException("Family Card Number isn't registered in families data.");
         }
     }
 
-    public function validateBirthplaceOption(int $birthplaceId)
+    public function validateBirthplaceOption(int $birthplaceId): void
     {
         if (!$this->referenceRepository->exists('cities', $birthplaceId)) {
             throw new ValidationException("Selected birthplace is invalid.");
         }
     }
 
-    public function validateReligionOption(int $religionId)
+    public function validateReligionOption(int $religionId): void
     {
         if (!$this->referenceRepository->exists('religions', $religionId)) {
             throw new ValidationException("Selected religion is invalid.");
         }
     }
 
-    public function validateEducationOption(int $educationId)
+    public function validateEducationOption(int $educationId): void
     {
         if (!$this->referenceRepository->exists('educations', $educationId)) {
             throw new ValidationException("Selected education is invalid.");
         }
     }
 
-    public function validateOccupationOption(int $occupationId)
+    public function validateOccupationOption(int $occupationId): void
     {
         if (!$this->referenceRepository->exists('occupations', $occupationId)) {
             throw new ValidationException("Selected occupation is invalid.");
         }
     }
 
-    public function validateFamilyRoleOption(int $familyRoleId)
+    public function validateFamilyRoleOption(int $familyRoleId): void
     {
         if (!$this->referenceRepository->exists('family_roles', $familyRoleId)) {
             throw new ValidationException("Selected family role is invalid.");

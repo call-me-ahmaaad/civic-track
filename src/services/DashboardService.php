@@ -14,7 +14,7 @@ class DashboardService
         $this->statisticRepository = $statisticRepository;
     }
 
-    public function getDashboardData()
+    public function getDashboardData(): array
     {
         return [
             'total_family' => $this->statisticRepository->getTotalFamily(),
@@ -27,12 +27,12 @@ class DashboardService
         ];
     }
 
-    private function getAge(string $birthdate)
+    private function getAge(string $birthdate): int
     {
         return Carbon::parse($birthdate)->age;
     }
 
-    private function getAgeCategory($age)
+    private function getAgeCategory($age): string
     {
         return match (true) {
             $age >= 60 => 'Elderly',
@@ -44,7 +44,7 @@ class DashboardService
         };
     }
 
-    private function getTotalEachAge(array $birthdates)
+    private function getTotalEachAge(array $birthdates): array
     {
         $results = [
             'Elderly' => 0,

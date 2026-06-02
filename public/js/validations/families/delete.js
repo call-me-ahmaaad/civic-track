@@ -1,13 +1,15 @@
 const form = document.getElementById("deleteForm")
-const deleteBtn = document.getElementById("delete-btn");
 
-deleteBtn.addEventListener('click', function (e) {
+form.addEventListener('submit', function (e) {
     e.preventDefault();
 
     Swal.fire({
         icon: 'warning',
         title: 'Delete Family Record?',
-        text: 'This action will permanently delete the family record and cannot be undone.',
+        html: `
+                <strong>This action cannot be undone.</strong>
+                <p>Family records with associated residents cannot be deleted. Please remove all related resident records before proceeding.</p>
+            `,
         showCancelButton: true,
         confirmButtonColor: '#E53E3E',
         cancelButtonColor: '#9CA3AF',
@@ -16,7 +18,7 @@ deleteBtn.addEventListener('click', function (e) {
     }).then((result) => {
         if (result.isConfirmed) {
             form.submit();
-        } else if (result.dismiss) {
+        } else {
             Swal.fire({
                 title: "Deletion Cancelled",
                 text: "The family record was not deleted.",

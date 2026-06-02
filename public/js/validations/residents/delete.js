@@ -1,7 +1,6 @@
 const form = document.getElementById("deleteForm")
-const deleteBtn = document.getElementById("delete-btn");
 
-deleteBtn.addEventListener('click', function (e) {
+form.addEventListener('submit', function (e) {
     e.preventDefault();
 
     Swal.fire({
@@ -16,7 +15,7 @@ deleteBtn.addEventListener('click', function (e) {
     }).then((result) => {
         if (result.isConfirmed) {
             form.submit();
-        } else if (result.dismiss) {
+        } else {
             Swal.fire({
                 title: "Deletion Cancelled",
                 text: "The resident record was not deleted.",

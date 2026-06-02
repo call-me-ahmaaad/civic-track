@@ -14,14 +14,14 @@ class FamilyValidator
         $this->familyRepository = $familyRepository;
     }
 
-    public function validateUniqueFamilyCardNumber(string $familyCardNumber)
+    public function validateUniqueFamilyCardNumber(string $familyCardNumber): void
     {
         if ($this->familyRepository->isFamilyCardNumberTaken($familyCardNumber)) {
             throw new ValidationException("Family Card Number is already in use.");
         }
     }
 
-    public function validateUniqueUpdateFamilyCardNumber(string $familyCardNumber, int $excludeId)
+    public function validateUniqueUpdateFamilyCardNumber(string $familyCardNumber, int $excludeId): void
     {
         if ($this->familyRepository->isFamilyCardNumberTakenByOther($familyCardNumber, $excludeId)) {
             throw new ValidationException("Family Card Number is already in use.");

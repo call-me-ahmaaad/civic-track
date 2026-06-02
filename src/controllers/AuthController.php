@@ -14,12 +14,12 @@ class AuthController
         $this->userRepository = $userRepository;
     }
 
-    public function index()
+    public function index(): void
     {
         require __DIR__ . '/../../views/auth/login.php';
     }
 
-    public function login()
+    public function login(): void
     {
         $username = $_POST['username'];
         $password = $_POST['password'];
@@ -64,7 +64,7 @@ class AuthController
         }
     }
 
-    public function logout()
+    public function logout(): void
     {
         unset($_SESSION['user']);
 

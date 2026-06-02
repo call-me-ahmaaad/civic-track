@@ -14,12 +14,12 @@ class Family
     private string $createdAt;
     private string $updatedAt;
 
-    public function setId(int $id)
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
 
-    public function setFamilyCardNumber(string $familyCardNumber)
+    public function setFamilyCardNumber(string $familyCardNumber): void
     {
         if ($familyCardNumber === '') {
             throw new ValidationException("Family Card Number cannot be empty");
@@ -32,7 +32,7 @@ class Family
         $this->familyCardNumber = $familyCardNumber;
     }
 
-    public function setAddress(string $address)
+    public function setAddress(string $address): void
     {
         if ($address === '') {
             throw new ValidationException("Address cannot be empty");
@@ -41,7 +41,7 @@ class Family
         $this->address = $address;
     }
 
-    public function setNeighborhoodUnit(string $neighborhoodUnit)
+    public function setNeighborhoodUnit(string $neighborhoodUnit): void
     {
         if ($neighborhoodUnit === '') {
             throw new ValidationException("Neighborhood Unit cannot be empty");
@@ -54,7 +54,7 @@ class Family
         $this->neighborhoodUnit = $neighborhoodUnit;
     }
 
-    public function setCommunityUnit(string $communityUnit)
+    public function setCommunityUnit(string $communityUnit): void
     {
         if ($communityUnit === '') {
             throw new ValidationException("Community Unit cannot be empty");
@@ -67,47 +67,47 @@ class Family
         $this->communityUnit = $communityUnit;
     }
 
-    public function setCreatedAt(string $createdAt)
+    public function setCreatedAt(string $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
 
-    public function setUpdatedAt(string $updatedAt)
+    public function setUpdatedAt(string $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
     }
 
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getFamilyCardNumber()
+    public function getFamilyCardNumber(): string
     {
         return $this->familyCardNumber;
     }
 
-    public function getAddress()
+    public function getAddress(): string
     {
         return $this->address;
     }
 
-    public function getNeighborhoodUnit()
+    public function getNeighborhoodUnit(): string
     {
         return $this->neighborhoodUnit;
     }
 
-    public function getCommunityUnit()
+    public function getCommunityUnit(): string
     {
         return $this->communityUnit;
     }
 
-    public function getCreatedAt()
+    public function getCreatedAt(): string
     {
         return $this->createdAt;
     }
 
-    public function getUpdatedAt()
+    public function getUpdatedAt(): string
     {
         return $this->updatedAt;
     }

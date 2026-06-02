@@ -16,7 +16,7 @@ class ResidentRepository
         $this->pdo = $pdo;
     }
 
-    public function findAll()
+    public function findAll(): array
     {
         try {
             $stmt = $this->pdo->prepare(
@@ -48,7 +48,7 @@ class ResidentRepository
         }
     }
 
-    public function findByFamilyCardNumber(string $familyCardNumber)
+    public function findByFamilyCardNumber(string $familyCardNumber): array
     {
         try {
             $stmt = $this->pdo->prepare(
@@ -83,7 +83,7 @@ class ResidentRepository
         }
     }
 
-    public function findById(int $id)
+    public function findById(int $id): Resident
     {
         try {
             $stmt = $this->pdo->prepare(
@@ -129,38 +129,53 @@ class ResidentRepository
         }
     }
 
-    public function isIdentityNumberTaken(string $identityNumber)
+    public function isIdExist(int $id): bool
     {
         try {
-            $stmt = $this->pdo->prepare("SELECT identity_number FROM residents WHERE identity_number = :identity_number");
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM residents WHERE id = :id");
+
+            $stmt->execute([
+                ":id" => $id
+            ]);
+
+            return $stmt->fetchColumn() > 0;
+        } catch (PDOException $error) {
+            throw new DatabaseException('Failed to check if ID exist or not in database.');
+        }
+    }
+
+    public function isIdentityNumberTaken(string $identityNumber): bool
+    {
+        try {
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM residents WHERE identity_number = :identity_number");
 
             $stmt->execute([
                 ":identity_number" => $identityNumber
             ]);
 
-            return $stmt->fetchColumn() !== false;
+            return $stmt->fetchColumn() > 0;
         } catch (PDOException $error) {
             throw new DatabaseException('Failed to check an identity number from database.');
         }
     }
 
-    public function isIdentityNumberTakenByOther(string $identityNumber, int $excludeId)
+    public function isIdentityNumberTakenByOther(string $identityNumber, int $excludeId): bool
     {
         try {
-            $stmt = $this->pdo->prepare("SELECT identity_number FROM residents WHERE identity_number = :identity_number AND id != :exclude_id");
+            $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM residents WHERE identity_number = :identity_number AND id != :exclude_id");
 
             $stmt->execute([
                 ":identity_number" => $identityNumber,
                 ":exclude_id" => $excludeId
             ]);
 
-            return $stmt->fetchColumn() !== false;
+            return $stmt->fetchColumn() > 0;
         } catch (PDOException $error) {
             throw new DatabaseException('Failed to check an identity number from database.');
         }
     }
 
-    public function save(Resident $resident)
+    public function save(Resident $resident): void
     {
         try {
             $stmt = $this->pdo->prepare(
@@ -186,7 +201,7 @@ class ResidentRepository
         }
     }
 
-    public function update(Resident $resident)
+    public function update(Resident $resident): void
     {
         try {
             $stmt = $this->pdo->prepare(
@@ -219,16 +234,12 @@ class ResidentRepository
                 ":family_card_number" => $resident->getFamilyCardNumber(),
                 ":id" => $resident->getId()
             ]);
-
-            if ($stmt->rowCount() === 0) {
-                throw new NotFoundException("Resident not found.");
-            }
         } catch (PDOException $error) {
             throw new DatabaseException('Failed to update a resident record to database.');
         }
     }
 
-    public function delete(int $id)
+    public function delete(int $id): void
     {
         try {
             $stmt = $this->pdo->prepare("DELETE FROM residents WHERE id = :id");
@@ -236,10 +247,6 @@ class ResidentRepository
             $stmt->execute([
                 ":id" => $id,
             ]);
-
-            if ($stmt->rowCount() === 0) {
-                throw new NotFoundException("Resident record not found.");
-            }
         } catch (PDOException $error) {
             throw new DatabaseException('Failed to delete a resident record from database.');
         }

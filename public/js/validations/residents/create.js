@@ -7,42 +7,42 @@ const familyCardNumberStatus = document.getElementById("familyCardNumber-status"
 const fullname = document.getElementById("fullname");
 const fullnameStatus = document.getElementById("fullname-status");
 
-const createBtn = document.getElementById("create-btn");
+[identityNumberNumber, familyCardNumber, fullname].forEach(field => {
+    field.addEventListener('input', () => {
+        document.getElementById(`${field.id}-status`).textContent = '';
+    });
+});
 
-createBtn.addEventListener('click', function (e) {
+form.addEventListener('submit', function (e) {
     e.preventDefault();
 
-    let error = 0;
-
-    identityNumberStatus.textContent = '';
-    familyCardNumberStatus.textContent = '';
-    fullnameStatus.textContent = '';
+    let isValid = true;
 
     if (identityNumber.value.trim() === '') {
         identityNumberStatus.textContent = 'Identity Number cannot be empty';
-        error++;
+        isValid = false;
     } else if (!/^\d{16}$/.test(identityNumber.value.trim())) {
         identityNumberStatus.textContent = 'Identity Number must consist of 16 digits';
-        error++;
+        isValid = false;
     }
 
     if (familyCardNumber.value.trim() === '') {
         familyCardNumberStatus.textContent = 'Family Card Number cannot be empty';
-        error++;
+        isValid = false;
     } else if (!/^\d{16}$/.test(familyCardNumber.value.trim())) {
         familyCardNumberStatus.textContent = 'Family Card Number must consist of 16 digits';
-        error++;
+        isValid = false;
     }
 
     if (fullname.value.trim() === '') {
         fullnameStatus.textContent = 'Fullname cannot be empty';
-        error++;
+        isValid = false;
     } else if (!/^[a-zA-Z\s'\-.]+$/.test(fullname.value.trim())) {
         fullnameStatus.textContent = 'Fullname must contain only letters';
-        error++;
+        isValid = false;
     }
 
-    if (error === 0) {
+    if (isValid) {
         Swal.fire({
             icon: 'question',
             title: 'Create New Resident Record?',
@@ -55,7 +55,7 @@ createBtn.addEventListener('click', function (e) {
         }).then((result) => {
             if (result.isConfirmed) {
                 form.submit();
-            } else if (result.dismiss) {
+            } else {
                 Swal.fire({
                     title: "Creation Cancelled",
                     text: "The resident record was not created.",

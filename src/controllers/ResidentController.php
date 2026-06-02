@@ -14,7 +14,7 @@ class ResidentController
         $this->residentService = $residentService;
     }
 
-    public function index()
+    public function index(): void
     {
         if (!isset($_SESSION['user'])) {
             header('Location: /login');
@@ -33,7 +33,7 @@ class ResidentController
         }
     }
 
-    public function create()
+    public function create(): void
     {
         if (!isset($_SESSION['user'])) {
             header('Location: /login');
@@ -56,7 +56,7 @@ class ResidentController
         require __DIR__ . '/../../views/residents/create.php';
     }
 
-    public function store()
+    public function store(): void
     {
         if (!isset($_SESSION['user'])) {
             header('Location: /login');
@@ -109,7 +109,7 @@ class ResidentController
         }
     }
 
-    public function detail()
+    public function detail(): void
     {
         if (!isset($_SESSION['user'])) {
             header('Location: /login');
@@ -143,7 +143,7 @@ class ResidentController
         }
     }
 
-    public function edit()
+    public function edit(): void
     {
         if (!isset($_SESSION['user'])) {
             header('Location: /login');
@@ -179,7 +179,7 @@ class ResidentController
         }
     }
 
-    public function update()
+    public function update(): void
     {
         if (!isset($_SESSION['user'])) {
             header('Location: /login');
@@ -221,7 +221,7 @@ class ResidentController
 
             header('Location: /residents');
             exit();
-        } catch (ValidationException $error) {
+        } catch (ValidationException | NotFoundException $error) {
             $_SESSION['alert'] = [
                 'icon' => 'error',
                 'title' => 'Failed to Update Resident Record',
@@ -233,7 +233,7 @@ class ResidentController
         }
     }
 
-    public function destroy()
+    public function destroy(): void
     {
         if (!isset($_SESSION['user'])) {
             header('Location: /login');
@@ -262,7 +262,7 @@ class ResidentController
 
             header('Location: /residents');
             exit();
-        } catch (ValidationException $error) {
+        } catch (ValidationException | NotFoundException $error) {
             $_SESSION['alert'] = [
                 'icon' => 'error',
                 'title' => 'Failed to Delete Resident Record',

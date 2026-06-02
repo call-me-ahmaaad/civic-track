@@ -5,27 +5,30 @@ const usernameStatus = document.getElementById("username-status");
 const password = document.getElementById("password");
 const passwordStatus = document.getElementById("password-status");
 
-const loginBtn = document.getElementById("login-btn");
+username.addEventListener('input', () => {
+    usernameStatus.textContent = '';
+})
 
-loginBtn.addEventListener('click', function (e) {
+password.addEventListener('input', () => {
+    passwordStatus.textContent = '';
+})
+
+form.addEventListener('submit', function (e) {
     e.preventDefault();
 
-    let error = 0;
-
-    usernameStatus.textContent = '';
-    passwordStatus.textContent = '';
+    let isValid = true;
 
     if (username.value === '') {
         usernameStatus.textContent = 'Username cannot be empty';
-        error++;
+        isValid = false;
     }
 
     if (password.value === '') {
         passwordStatus.textContent = 'Password cannot be empty';
-        error++;
+        isValid = false;
     }
 
-    if (error === 0) {
+    if (isValid) {
         form.submit();
     }
 });
